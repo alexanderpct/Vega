@@ -114,7 +114,7 @@ extension AdvancedSearchViewController {
     }
     
     @objc private func handleSearchButtonTapped() {
-        let controller = FilterViewController(networkService: networkService, users: selectedUserIDs)
+        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs)
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
