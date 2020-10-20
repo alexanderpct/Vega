@@ -21,7 +21,6 @@ class DisciplinesTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        
         addSubview(label)
         label.topAnchor.constraint(equalTo: topAnchor, constant: 4).isActive = true
         label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
