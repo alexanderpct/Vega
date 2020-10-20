@@ -28,9 +28,17 @@ class DocumentsListViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
+    private var users: [Int]
     
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
+        self.users = []
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(networkService: VegaNetworkProtocol, users: [Int]) {
+        self.networkService = networkService
+        self.users = users
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -74,7 +82,7 @@ class DocumentsListViewController: UIViewController {
     }
 
     private func getDocuments() {
-        networkService.fetchDocuments(keywords: "язык") { (documents) in
+        networkService.fetchDocuments(keywords: "язык", users: users) { (documents) in
             self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
             DispatchQueue.main.async {
                 self.navigationItem.title = "Документов: \(self.documents.count)"
