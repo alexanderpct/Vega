@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 protocol VegaNetworkProtocol {
     func subscribeTo(disciplines: String, completion: @escaping (String) -> Void)
     func genericFetchFunction<T: Decodable>(url: String, completion: @escaping (T?) -> Void)
