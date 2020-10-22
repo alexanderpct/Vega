@@ -27,7 +27,6 @@
 		E53725E2253DB81A00E06E2A /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D1253DB81A00E06E2A /* DocumentViewController.swift */; };
 		E53725E3253DB81A00E06E2A /* AdvancedSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */; };
 		E53725E4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */; };
-		E53725E5253DB81A00E06E2A /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D5253DB81A00E06E2A /* FilterViewController.swift */; };
 		E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D7253DB81A00E06E2A /* MainTabBarController.swift */; };
 		E53725E7253DB81A00E06E2A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D8253DB81A00E06E2A /* LoginViewController.swift */; };
 		E53725E8253DB81A00E06E2A /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725DA253DB81A00E06E2A /* UploadViewController.swift */; };
@@ -86,7 +85,6 @@
 		E53725D1253DB81A00E06E2A /* DocumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentViewController.swift; sourceTree = "<group>"; };
 		E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSearchViewController.swift; sourceTree = "<group>"; };
 		E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericCategorySearchTableViewController.swift; sourceTree = "<group>"; };
-		E53725D5253DB81A00E06E2A /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		E53725D7253DB81A00E06E2A /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		E53725D8253DB81A00E06E2A /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E53725DA253DB81A00E06E2A /* UploadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
@@ -264,7 +262,6 @@
 			children = (
 				E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */,
 				E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */,
-				E53725D5253DB81A00E06E2A /* FilterViewController.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -447,7 +444,6 @@
 				E53725EA253DB81A00E06E2A /* ProfileViewController.swift in Sources */,
 				E5372610253DC2B900E06E2A /* DisciplinesDTO.swift in Sources */,
 				E53725F4253DB81E00E06E2A /* DocumentTableViewCell.swift in Sources */,
-				E53725E5253DB81A00E06E2A /* FilterViewController.swift in Sources */,
 				E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */,
 				E53725F3253DB81E00E06E2A /* DisciplinesTableViewCell.swift in Sources */,
 				E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */,

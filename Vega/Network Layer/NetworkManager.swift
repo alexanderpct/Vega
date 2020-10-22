@@ -20,6 +20,7 @@ protocol VegaNetworkProtocol {
     func fetchUpdates(completion: @escaping (AllUpdates?) -> Void)
     func fetchSubscribedDisciplines(completion: @escaping (SubscribedDisciplines?) -> Void)
     func fetchDocuments(keywords: String, completion: @escaping (AllDocumentsDTO?) -> Void)
+    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (AllDocumentsDTO?) -> Void)
 }
 
 final class NetworkService: VegaNetworkProtocol {
@@ -88,11 +89,18 @@ final class NetworkService: VegaNetworkProtocol {
     }
     
     func fetchDocuments(keywords: String, completion: @escaping (AllDocumentsDTO?) -> Void) {
-        return fetchDocuments(keywords: keywords, authors: [], themes: [], completion: completion)
+        return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], completion: completion)
     }
+    
+    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (AllDocumentsDTO?) -> Void) {
+        return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], completion: completion)
+    }
+    
+    
     
     func fetchDocuments(keywords: String,
                         authors: [String] = [],
+                        users: [Int] = [],
                         themes: [String] = [],
                         completion: @escaping (AllDocumentsDTO?) -> Void) {
         let urlString = "\(baseURL)/search"
@@ -102,7 +110,7 @@ final class NetworkService: VegaNetworkProtocol {
                                    "disciplines" : [],
                                    "themes" : themes,
                                    "doctypes" : [],
-                                   "users" : [],
+                                   "users" : users,
                                    "upload-time-cond" : 0,
                                    "upload-time-param" : "",
                                    "authors" : [],
