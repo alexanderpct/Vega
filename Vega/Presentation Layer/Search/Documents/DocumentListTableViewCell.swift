@@ -70,9 +70,9 @@ class DocumentListTableViewCell: UITableViewCell {
         let bottomStackView = UIStackView(arrangedSubviews: [thumbsupIcon, ratingLabel, commentsIcon, commentsLabel])
         bottomStackView.distribution = .fillProportionally
         
-   //      bottomStackView.setCustomSpacing(3, after: thumbsupIcon)
-   //     bottomStackView.setCustomSpacing(30, after: ratingLabel)
-   //     bottomStackView.setCustomSpacing(3, after: commentsIcon)
+        bottomStackView.setCustomSpacing(3, after: thumbsupIcon)
+        bottomStackView.setCustomSpacing(15, after: ratingLabel)
+        bottomStackView.setCustomSpacing(3, after: commentsIcon)
    
     
         
@@ -94,10 +94,8 @@ class DocumentListTableViewCell: UITableViewCell {
 
             thumbsupIcon.widthAnchor.constraint(equalToConstant: 20),
             commentsIcon.widthAnchor.constraint(equalToConstant: 24),
+            ratingLabel.widthAnchor.constraint(equalToConstant: 15)
             
-            thumbsupIcon.leadingAnchor.constraint(equalTo: bottomStackView.leadingAnchor),
-            
-            ratingLabel.leadingAnchor.constraint(equalTo: thumbsupIcon.trailingAnchor, constant: 30) // выдает ошибку в консоли
         ])
 
         accessoryType = .disclosureIndicator
