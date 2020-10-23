@@ -36,7 +36,7 @@ class DocumentListTableViewCell: UITableViewCell {
     }()
     
     private let thumbsupIcon: UIImageView = {
-        let thumbs = UIImage(systemName: "envelope")
+        let thumbs = UIImage(named: "thumbup")
         let thumbsup = UIImageView(image: thumbs)
         thumbsup.image = thumbsup.image?.withRenderingMode(.alwaysTemplate)
         thumbsup.tintColor = UIColor.gray
@@ -44,7 +44,7 @@ class DocumentListTableViewCell: UITableViewCell {
     }()
     
     private let commentsIcon: UIImageView = {
-        let comment = UIImage(systemName: "envelope")
+        let comment = UIImage(named: "comment")
         let commentImage = UIImageView(image: comment)
         commentImage.image = commentImage.image?.withRenderingMode(.alwaysTemplate)
         commentImage.tintColor = UIColor.gray
@@ -73,6 +73,9 @@ class DocumentListTableViewCell: UITableViewCell {
         let stackView = UIStackView(arrangedSubviews: [headerLabel, descriptionLabel, bottomStackView])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
+        
+        thumbsupIcon.contentMode = .scaleAspectFit
+        commentsIcon.contentMode = .scaleAspectFit
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
@@ -82,8 +85,8 @@ class DocumentListTableViewCell: UITableViewCell {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -36),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            thumbsupIcon.widthAnchor.constraint(equalToConstant: 30),
-            commentsIcon.widthAnchor.constraint(equalToConstant: 30)
+            thumbsupIcon.widthAnchor.constraint(equalToConstant: 20),
+            commentsIcon.widthAnchor.constraint(equalToConstant: 24)
         ])
 
         accessoryType = .disclosureIndicator
@@ -96,8 +99,8 @@ class DocumentListTableViewCell: UITableViewCell {
     func configure(with header: String, description: String, rating: String, comments: String) {
         headerLabel.text = header
         descriptionLabel.text = description
-        ratingLabel.text = rating
-        commentsLabel.text = comments
+        ratingLabel.text = " \(rating)       "
+        commentsLabel.text = " \(comments)"
     }
 
 }

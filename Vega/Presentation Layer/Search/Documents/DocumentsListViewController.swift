@@ -65,7 +65,7 @@ class DocumentsListViewController: UIViewController {
         tableView.frame = view.frame
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 100
+        tableView.rowHeight = 120
         tableView.register(DocumentListTableViewCell.self, forCellReuseIdentifier: cellId)
     }
     
