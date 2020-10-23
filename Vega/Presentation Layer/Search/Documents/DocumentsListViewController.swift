@@ -36,10 +36,10 @@ class DocumentsListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    init(networkService: VegaNetworkProtocol, users: [Int]) {
-        self.networkService = networkService
+    convenience init(networkService: VegaNetworkProtocol, users: [Int]) {
+        self.init(networkService: networkService)
         self.users = users
-        super.init(nibName: nil, bundle: nil)
+    
     }
     
     required init?(coder: NSCoder) {
