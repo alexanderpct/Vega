@@ -69,6 +69,13 @@ class DocumentListTableViewCell: UITableViewCell {
 
         let bottomStackView = UIStackView(arrangedSubviews: [thumbsupIcon, ratingLabel, commentsIcon, commentsLabel])
         bottomStackView.distribution = .fillProportionally
+        
+        bottomStackView.setCustomSpacing(3, after: thumbsupIcon)
+        bottomStackView.setCustomSpacing(15, after: ratingLabel)
+        bottomStackView.setCustomSpacing(3, after: commentsIcon)
+   
+    
+        
 
         let stackView = UIStackView(arrangedSubviews: [headerLabel, descriptionLabel, bottomStackView])
         stackView.axis = .vertical
@@ -86,7 +93,9 @@ class DocumentListTableViewCell: UITableViewCell {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             thumbsupIcon.widthAnchor.constraint(equalToConstant: 20),
-            commentsIcon.widthAnchor.constraint(equalToConstant: 24)
+            commentsIcon.widthAnchor.constraint(equalToConstant: 24),
+            ratingLabel.widthAnchor.constraint(equalToConstant: 15)
+            
         ])
 
         accessoryType = .disclosureIndicator
@@ -99,8 +108,8 @@ class DocumentListTableViewCell: UITableViewCell {
     func configure(with header: String, description: String, rating: String, comments: String) {
         headerLabel.text = header
         descriptionLabel.text = description
-        ratingLabel.text = " \(rating)       "
-        commentsLabel.text = " \(comments)"
+        ratingLabel.text = rating
+        commentsLabel.text = comments
     }
 
 }
