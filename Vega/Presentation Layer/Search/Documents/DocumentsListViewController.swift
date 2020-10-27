@@ -81,6 +81,7 @@ class DocumentsListViewController: UIViewController {
         searchController.searchBar.showsSearchResultsButton = true;
         searchController.searchBar.showsCancelButton = false
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        
     }
 
     private func getDocuments() {
@@ -133,6 +134,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
             self.networkService.fetchDocuments(keywords: searchText, completion: { (documents) in
                 self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
                 DispatchQueue.main.async {
+                    self.navigationItem.title = "Документов: \(self.documents.count)"
                     self.tableView.reloadData()
                 }
             })
@@ -141,6 +143,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
         let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
+        controller.RefreshDocumentsDelegate = self
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
@@ -160,6 +163,22 @@ extension DocumentsListViewController {
     @objc private func hideKeyboard() {
         searchController.dismiss(animated: true, completion: nil)
     }
+}
+
+extension DocumentsListViewController: RefreshDocumentsListDelegate{
+    func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
+        self.options = options
+        self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (documents) in
+            self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
+            DispatchQueue.main.async {
+                self.navigationItem.title = "Документов: \(self.documents.count)"
+                self.tableView.reloadData()
+            }
+        })
+    }
+
+    
+    
 }
 
 

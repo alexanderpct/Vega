@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol RefreshDocumentsListDelegate {
+    func refreshDocuments(selectedUserIDs: [Int], options: [String])
+}
+
 enum PickType {
     case users
     case documents
@@ -20,6 +24,7 @@ class AdvancedSearchViewController: UITableViewController {
     
     var selectedUserIDs = [Int]()
     var options: [String] = []
+    var RefreshDocumentsDelegate: RefreshDocumentsListDelegate!
     
     private let cellId = "cellId"
     private let networkService: NetworkService
@@ -122,13 +127,18 @@ extension AdvancedSearchViewController {
     }
     
     @objc private func handleSearchButtonTapped() {
-        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs, options: options)
-        let navigationController = UINavigationController(rootViewController: controller)
-        present(navigationController, animated: true, completion: nil)
+        RefreshDocumentsDelegate?.refreshDocuments(selectedUserIDs: selectedUserIDs, options: options)
+        
+        dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleNewIterationButtonTapped() {
-        
+        if options.contains("admin"){selectedUserIDs.append(1)}
+        if options.contains("testprep"){selectedUserIDs.append(2)}
+        if options.contains("teststud"){selectedUserIDs.append(3)}
+        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs, options: options)
+        let navigationController = UINavigationController(rootViewController: controller)
+        present(navigationController, animated: true, completion: nil)
     }
     
     @objc private func handleTapGesture(gestureRecognizer: UITapGestureRecognizer) {
