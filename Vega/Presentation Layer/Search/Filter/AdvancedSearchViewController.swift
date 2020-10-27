@@ -31,6 +31,11 @@ class AdvancedSearchViewController: UITableViewController {
         super.init(style: style)
     }
     
+    convenience init(networkService: NetworkService, style: UITableView.Style, options: [String]) {
+        self.init(networkService: networkService, style: style)
+        self.options = options
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -115,7 +120,7 @@ extension AdvancedSearchViewController {
     }
     
     @objc private func handleSearchButtonTapped() {
-        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs)
+        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs, options: options)
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }

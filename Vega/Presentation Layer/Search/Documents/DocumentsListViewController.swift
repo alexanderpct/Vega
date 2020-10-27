@@ -29,6 +29,7 @@ class DocumentsListViewController: UIViewController {
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
     private var users: [Int]
+    private var options: [String] = []
     
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
@@ -36,9 +37,10 @@ class DocumentsListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    convenience init(networkService: VegaNetworkProtocol, users: [Int]) {
+    convenience init(networkService: VegaNetworkProtocol, users: [Int], options: [String]) {
         self.init(networkService: networkService)
         self.users = users
+        self.options = options
     
     }
     
@@ -138,7 +140,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
     }
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
-        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped)
+        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
