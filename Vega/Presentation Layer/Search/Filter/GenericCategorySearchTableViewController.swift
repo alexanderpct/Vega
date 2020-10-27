@@ -28,9 +28,10 @@ class GenericCategorySearchTableViewController: UITableViewController {
     
     private let spinner = UIActivityIndicatorView(style: .medium)
     
-    init(networkService: NetworkService, type: PickType) {
+    init(networkService: NetworkService, type: PickType, pickedValues: [String]) {
         self.networkService = networkService
         self.pickType = type
+        self.pickedValues = pickedValues
         super.init(style: .plain)
     }
     
@@ -70,9 +71,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
         cell.sizeToFit()
         cell.selectionStyle = .none
         
-        if !checked[indexPath.row] {
-            cell.accessoryType = .none
-        } else if checked[indexPath.row] {
+        if pickedValues.contains(values[indexPath.row]) {
             cell.accessoryType = .checkmark
         }
 

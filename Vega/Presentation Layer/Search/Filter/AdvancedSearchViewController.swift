@@ -19,6 +19,7 @@ enum PickType {
 class AdvancedSearchViewController: UITableViewController {
     
     var selectedUserIDs = [Int]()
+    var options: [String]
     
     private let cellId = "cellId"
     private let networkService: NetworkService
@@ -27,6 +28,7 @@ class AdvancedSearchViewController: UITableViewController {
     
     init(networkService: NetworkService, style: UITableView.Style) {
         self.networkService = networkService
+        self.options = []
         super.init(style: style)
     }
     
@@ -98,7 +100,7 @@ extension AdvancedSearchViewController {
             case 3: pickType = .themes
             default: pickType = .none
         }
-        let controller = GenericCategorySearchTableViewController(networkService: networkService, type: pickType)
+        let controller = GenericCategorySearchTableViewController(networkService: networkService, type: pickType, pickedValues: options)
         let navigationController = UINavigationController(rootViewController: controller)
         
         controller.optionsDelegate = self
@@ -133,6 +135,7 @@ extension AdvancedSearchViewController: UITextFieldDelegate {
 
 extension AdvancedSearchViewController: PickOptionsDelegate {
     func didPick(options: [String], with type: PickType?) {
+        self.options = options
         if type == PickType.themes {
             networkService.fetchDocuments(keywords: "язык", themes: options) { (documents) in
             }
