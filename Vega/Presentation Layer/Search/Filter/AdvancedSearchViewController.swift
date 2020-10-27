@@ -19,7 +19,7 @@ enum PickType {
 class AdvancedSearchViewController: UITableViewController {
     
     var selectedUserIDs = [Int]()
-    var options: [String]
+    var options: [String] = []
     
     private let cellId = "cellId"
     private let networkService: NetworkService
@@ -28,7 +28,6 @@ class AdvancedSearchViewController: UITableViewController {
     
     init(networkService: NetworkService, style: UITableView.Style) {
         self.networkService = networkService
-        self.options = []
         super.init(style: style)
     }
     
