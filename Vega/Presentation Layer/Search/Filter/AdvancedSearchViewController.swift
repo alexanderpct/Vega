@@ -61,8 +61,10 @@ class AdvancedSearchViewController: UITableViewController {
     private func setupNavigationBar() {
         self.navigationController?.navigationBar.topItem?.title = "Фильтры"
         let leftButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(handleBackButtonTapped))
-        let rightButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(handleSearchButtonTapped))
-        self.navigationItem.rightBarButtonItem = rightButton
+        let refreshCurrentDocumentsList = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(handleSearchButtonTapped))
+        let openNewViewController = UIBarButtonItem(image: UIImage(systemName: "plus.magnifyingglass"), style: .plain, target: self, action: #selector(handleNewIterationButtonTapped))
+        
+        self.navigationItem.rightBarButtonItems = [refreshCurrentDocumentsList, openNewViewController]
         self.navigationItem.leftBarButtonItem = leftButton
     }
     
@@ -123,6 +125,10 @@ extension AdvancedSearchViewController {
         let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs, options: options)
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
+    }
+    
+    @objc private func handleNewIterationButtonTapped() {
+        
     }
     
     @objc private func handleTapGesture(gestureRecognizer: UITapGestureRecognizer) {
