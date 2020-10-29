@@ -67,9 +67,8 @@ class AdvancedSearchViewController: UITableViewController {
         self.navigationController?.navigationBar.topItem?.title = "Фильтры"
         let leftButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(handleBackButtonTapped))
         let refreshCurrentDocumentsList = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(handleSearchButtonTapped))
-        let openNewViewController = UIBarButtonItem(image: UIImage(systemName: "plus.magnifyingglass"), style: .plain, target: self, action: #selector(handleNewIterationButtonTapped))
         
-        self.navigationItem.rightBarButtonItems = [refreshCurrentDocumentsList, openNewViewController]
+        self.navigationItem.rightBarButtonItem = refreshCurrentDocumentsList
         self.navigationItem.leftBarButtonItem = leftButton
     }
     
@@ -130,15 +129,6 @@ extension AdvancedSearchViewController {
         RefreshDocumentsDelegate?.refreshDocuments(selectedUserIDs: selectedUserIDs, options: options)
         
         dismiss(animated: true, completion: nil)
-    }
-    
-    @objc private func handleNewIterationButtonTapped() {
-        if options.contains("admin"){selectedUserIDs.append(1)}
-        if options.contains("testprep"){selectedUserIDs.append(2)}
-        if options.contains("teststud"){selectedUserIDs.append(3)}
-        let controller = DocumentsListViewController(networkService: networkService, users: selectedUserIDs, options: options)
-        let navigationController = UINavigationController(rootViewController: controller)
-        present(navigationController, animated: true, completion: nil)
     }
     
     @objc private func handleTapGesture(gestureRecognizer: UITapGestureRecognizer) {

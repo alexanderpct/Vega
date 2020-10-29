@@ -28,12 +28,11 @@ class DocumentsListViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
-    private var users: [Int]
+    private var users: [Int] = []
     private var options: [String] = []
     
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
-        self.users = []
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,6 +52,7 @@ class DocumentsListViewController: UIViewController {
         super.viewDidLoad()
         getDocuments()
         setupSearchBar()
+        setupIterationButton()
         setupTableView()
     }
     
@@ -69,6 +69,12 @@ class DocumentsListViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = 120
         tableView.register(DocumentListTableViewCell.self, forCellReuseIdentifier: cellId)
+    }
+    
+    private func setupIterationButton(){
+        let openNewViewController = UIBarButtonItem(image: UIImage(systemName: "plus.magnifyingglass"), style: .plain, target: self, action: #selector(handleNewIterationButtonTapped))
+        
+        navigationItem.rightBarButtonItem = openNewViewController
     }
     
     // MARK: - Private methods
@@ -92,6 +98,12 @@ class DocumentsListViewController: UIViewController {
                 self.tableView.reloadData()
             }
         }
+    }
+    
+    @objc private func handleNewIterationButtonTapped() {
+        let controller = DocumentsListViewController(networkService: networkService, users: users, options: options)
+        let navigationController = UINavigationController(rootViewController: controller)
+        present(navigationController, animated: true, completion: nil)
     }
 
 }
@@ -168,6 +180,7 @@ extension DocumentsListViewController {
 extension DocumentsListViewController: RefreshDocumentsListDelegate{
     func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
         self.options = options
+        self.users = selectedUserIDs
         self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (documents) in
             self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
             DispatchQueue.main.async {
