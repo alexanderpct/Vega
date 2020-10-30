@@ -36,12 +36,7 @@ class DocumentsListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    convenience init(networkService: VegaNetworkProtocol, users: [Int], options: [String]) {
-        self.init(networkService: networkService)
-        self.users = users
-        self.options = options
-    
-    }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -52,7 +47,6 @@ class DocumentsListViewController: UIViewController {
         super.viewDidLoad()
         getDocuments()
         setupSearchBar()
-        setupIterationButton()
         setupTableView()
     }
     
@@ -69,12 +63,6 @@ class DocumentsListViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = 120
         tableView.register(DocumentListTableViewCell.self, forCellReuseIdentifier: cellId)
-    }
-    
-    private func setupIterationButton(){
-        let openNewViewController = UIBarButtonItem(image: UIImage(systemName: "plus.magnifyingglass"), style: .plain, target: self, action: #selector(handleNewIterationButtonTapped))
-        
-        navigationItem.rightBarButtonItem = openNewViewController
     }
     
     // MARK: - Private methods
@@ -99,12 +87,7 @@ class DocumentsListViewController: UIViewController {
             }
         }
     }
-    
-    @objc private func handleNewIterationButtonTapped() {
-        let controller = DocumentsListViewController(networkService: networkService, users: users, options: options)
-        let navigationController = UINavigationController(rootViewController: controller)
-        present(navigationController, animated: true, completion: nil)
-    }
+
 
 }
 
