@@ -148,7 +148,7 @@ extension AdvancedSearchViewController: UITextFieldDelegate {
 
 extension AdvancedSearchViewController: PickOptionsDelegate {
     func didPick(options: [String], with type: PickType?) {
-        
+
         if type == PickType.themes {
             networkService.fetchDocuments(keywords: "язык", themes: options) { (documents) in
             }
