@@ -50,7 +50,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
         tableView.backgroundView = spinner
   
         let leftButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(handleBackButtonTapped))
-        let rightButton = UIBarButtonItem(image: UIImage(systemName: "checkmark"), style: .plain, target: self, action: #selector(handleConfirmButtonTapped))
+        let rightButton = UIBarButtonItem(title: "Выбрать", style: .plain, target: self, action: #selector(handleConfirmButtonTapped))
         self.navigationItem.leftBarButtonItem = leftButton
         self.navigationItem.rightBarButtonItem = rightButton
 
