@@ -57,9 +57,9 @@ class AdvancedSearchViewController: UITableViewController {
         
         setupNavigationBar()
                 
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(AdvancedSearchTableViewCell.self, forCellReuseIdentifier: cellId)
         
-        tableView.rowHeight = 60
+        tableView.rowHeight = 80
         
     }
     
@@ -95,8 +95,11 @@ extension AdvancedSearchViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        cell.textLabel?.text = titles[indexPath.section]
+//        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+//        cell.textLabel?.text = titles[indexPath.section]
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! AdvancedSearchTableViewCell
+        cell.configure(title: titles[indexPath.section], selectedFilters: options.joined(separator: ", "), section: indexPath.section)
         return cell
     }
 
@@ -145,19 +148,21 @@ extension AdvancedSearchViewController: UITextFieldDelegate {
 
 extension AdvancedSearchViewController: PickOptionsDelegate {
     func didPick(options: [String], with type: PickType?) {
-        self.options = options
+        
         if type == PickType.themes {
             networkService.fetchDocuments(keywords: "язык", themes: options) { (documents) in
             }
         }
         
         else if type == PickType.users {
+            self.options = options
             selectedUserIDs = []
             if options.contains("admin"){selectedUserIDs.append(1)}
             if options.contains("testprep"){selectedUserIDs.append(2)}
             if options.contains("teststud"){selectedUserIDs.append(3)}
             
         }
+        self.tableView.reloadData()
         
         
         
