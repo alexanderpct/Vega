@@ -56,9 +56,9 @@ class AdvancedSearchTableViewCell: UITableViewCell {
         self.title.text = title
         self.selectedFilters.text = "Не выбрано"
         self.selectedFilters.textColor = .lightGray
-        if section == 0{
-            if selectedFilters != ""
-            {self.selectedFilters.text = selectedFilters
+        if section == 0 {
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
             

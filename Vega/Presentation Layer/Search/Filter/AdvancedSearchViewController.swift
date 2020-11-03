@@ -95,8 +95,6 @@ extension AdvancedSearchViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-//        cell.textLabel?.text = titles[indexPath.section]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! AdvancedSearchTableViewCell
         cell.configure(title: titles[indexPath.section], selectedFilters: options.joined(separator: ", "), section: indexPath.section)
