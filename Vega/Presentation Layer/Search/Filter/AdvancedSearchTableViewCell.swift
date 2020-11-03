@@ -52,11 +52,11 @@ class AdvancedSearchTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(title: String, selectedFilters: String, section: Int){
+    func configure(title: String, selectedFilters: String, section: Int, row: Int){
         self.title.text = title
         self.selectedFilters.text = "Не выбрано"
         self.selectedFilters.textColor = .lightGray
-        if section == 0 {
+        if section == 0 && row == 0 {
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
