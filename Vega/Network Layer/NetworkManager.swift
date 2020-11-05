@@ -8,6 +8,7 @@
 
 import Foundation
 
+typealias DocumentsResult = Result<AllDocumentsDTO, HTTP.NetworkError>
 
 protocol VegaNetworkProtocol {
     func subscribeTo(disciplines: String, completion: @escaping (String) -> Void)
@@ -19,8 +20,8 @@ protocol VegaNetworkProtocol {
     func fetchHistory(completion: @escaping (AllHistories?) -> Void)
     func fetchUpdates(completion: @escaping (AllUpdates?) -> Void)
     func fetchSubscribedDisciplines(completion: @escaping (SubscribedDisciplines?) -> Void)
-    func fetchDocuments(keywords: String, completion: @escaping (AllDocumentsDTO?) -> Void)
-    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (AllDocumentsDTO?) -> Void)
+    func fetchDocuments(keywords: String, completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (DocumentsResult) -> Void)
 }
 
 final class NetworkService: VegaNetworkProtocol {
@@ -88,11 +89,11 @@ final class NetworkService: VegaNetworkProtocol {
 //        genericFetchFunction(url: urlString, completion: completion)
     }
     
-    func fetchDocuments(keywords: String, completion: @escaping (AllDocumentsDTO?) -> Void) {
+    func fetchDocuments(keywords: String, completion: @escaping (DocumentsResult) -> Void) {
         return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], completion: completion)
     }
     
-    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (AllDocumentsDTO?) -> Void) {
+    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (DocumentsResult) -> Void) {
         return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], completion: completion)
     }
     
@@ -102,7 +103,7 @@ final class NetworkService: VegaNetworkProtocol {
                         authors: [String] = [],
                         users: [Int] = [],
                         themes: [String] = [],
-                        completion: @escaping (AllDocumentsDTO?) -> Void) {
+                        completion: @escaping (DocumentsResult) -> Void) {
         let urlString = "\(baseURL)/search"
         guard let url = URL(string: urlString) else { return }
         
@@ -139,7 +140,7 @@ final class NetworkService: VegaNetworkProtocol {
             print(data)
             do {
                 let objects = try JSONDecoder().decode(AllDocumentsDTO.self, from: data)
-                completion(objects)
+                completion(.success(objects))
             } catch {
                 print(error)
                 return

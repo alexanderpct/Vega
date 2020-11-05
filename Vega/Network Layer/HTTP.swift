@@ -15,7 +15,7 @@ enum HTTP {
         case POST = "POST"
     }
 
-    enum Error {
-
+    enum NetworkError: Error {
+        case genericError
     }
 }
