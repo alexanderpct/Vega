@@ -28,19 +28,15 @@ class DocumentsListViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
-    private var users: [Int]
+    private var users: [Int] = []
+    private var options: [String] = []
     
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
-        self.users = []
         super.init(nibName: nil, bundle: nil)
     }
     
-    convenience init(networkService: VegaNetworkProtocol, users: [Int]) {
-        self.init(networkService: networkService)
-        self.users = users
-    
-    }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -79,6 +75,7 @@ class DocumentsListViewController: UIViewController {
         searchController.searchBar.showsSearchResultsButton = true;
         searchController.searchBar.showsCancelButton = false
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        
     }
 
     private func getDocuments() {
@@ -90,6 +87,7 @@ class DocumentsListViewController: UIViewController {
             }
         }
     }
+
 
 }
 
@@ -131,6 +129,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
             self.networkService.fetchDocuments(keywords: searchText, completion: { (documents) in
                 self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
                 DispatchQueue.main.async {
+                    self.navigationItem.title = "Документов: \(self.documents.count)"
                     self.tableView.reloadData()
                 }
             })
@@ -138,7 +137,8 @@ extension DocumentsListViewController: UISearchBarDelegate {
     }
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
-        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped)
+        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
+        controller.RefreshDocumentsDelegate = self
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
@@ -158,6 +158,23 @@ extension DocumentsListViewController {
     @objc private func hideKeyboard() {
         searchController.dismiss(animated: true, completion: nil)
     }
+}
+
+extension DocumentsListViewController: RefreshDocumentsListDelegate{
+    func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
+        self.options = options
+        self.users = selectedUserIDs
+        self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (documents) in
+            self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
+            DispatchQueue.main.async {
+                self.navigationItem.title = "Документов: \(self.documents.count)"
+                self.tableView.reloadData()
+            }
+        })
+    }
+
+    
+    
 }
 
 

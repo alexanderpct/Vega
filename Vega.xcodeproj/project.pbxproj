@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */; };
 		E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372557253DB51400E06E2A /* AppDelegate.swift */; };
 		E537255A253DB51400E06E2A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372559253DB51400E06E2A /* SceneDelegate.swift */; };
 		E5372561253DB51D00E06E2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E5372560253DB51D00E06E2A /* Assets.xcassets */; };
@@ -59,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTableViewCell.swift; sourceTree = "<group>"; };
 		E5372554253DB51400E06E2A /* Vega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5372557253DB51400E06E2A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E5372559253DB51400E06E2A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */,
+				DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */,
 				E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */,
 			);
 			path = Filter;
@@ -430,6 +433,7 @@
 				E53725E8253DB81A00E06E2A /* UploadViewController.swift in Sources */,
 				E53725BB253DB7EB00E06E2A /* History.swift in Sources */,
 				E53725E9253DB81A00E06E2A /* UpdatesViewController.swift in Sources */,
+				DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */,
 				E53725E4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift in Sources */,
 				E53725BA253DB7EB00E06E2A /* Document.swift in Sources */,
 				E53725B9253DB7EB00E06E2A /* Disciplines.swift in Sources */,
