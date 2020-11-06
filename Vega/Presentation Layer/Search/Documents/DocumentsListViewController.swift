@@ -79,11 +79,16 @@ class DocumentsListViewController: UIViewController {
     }
 
     private func getDocuments() {
-        networkService.fetchDocuments(keywords: "язык", users: users) { (documents) in
-            self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
-            DispatchQueue.main.async {
-                self.navigationItem.title = "Документов: \(self.documents.count)"
-                self.tableView.reloadData()
+        networkService.fetchDocuments(keywords: "язык", users: users) { (result) in
+            switch result {
+            case .success(let documents):
+                self.documents = documents.documents.compactMap { Document(from: $0) }
+                DispatchQueue.main.async {
+                    self.navigationItem.title = "Документов: \(self.documents.count)"
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
             }
         }
     }
@@ -126,11 +131,16 @@ extension DocumentsListViewController: UISearchBarDelegate {
                 return
             }
             
-            self.networkService.fetchDocuments(keywords: searchText, completion: { (documents) in
-                self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
-                DispatchQueue.main.async {
-                    self.navigationItem.title = "Документов: \(self.documents.count)"
-                    self.tableView.reloadData()
+            self.networkService.fetchDocuments(keywords: searchText, completion: { (result) in
+                switch result {
+                case .success(let documents):
+                    self.documents = documents.documents.compactMap { Document(from: $0) }
+                    DispatchQueue.main.async {
+                        self.navigationItem.title = "Документов: \(self.documents.count)"
+                        self.tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print(error)
                 }
             })
         }
@@ -164,11 +174,16 @@ extension DocumentsListViewController: RefreshDocumentsListDelegate{
     func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
         self.options = options
         self.users = selectedUserIDs
-        self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (documents) in
-            self.documents = documents?.documents.compactMap { Document(from: $0) } ?? []
-            DispatchQueue.main.async {
-                self.navigationItem.title = "Документов: \(self.documents.count)"
-                self.tableView.reloadData()
+        self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (result) in
+            switch result {
+            case .success(let documents):
+                self.documents = documents.documents.compactMap { Document(from: $0) }
+                DispatchQueue.main.async {
+                    self.navigationItem.title = "Документов: \(self.documents.count)"
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
             }
         })
     }
