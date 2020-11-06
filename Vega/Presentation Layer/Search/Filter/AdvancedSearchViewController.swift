@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol RefreshDocumentsListDelegate {
+protocol RefreshDocumentsListDelegate: class {
     func refreshDocuments(selectedUserIDs: [Int], options: [String])
 }
 
@@ -24,7 +24,7 @@ class AdvancedSearchViewController: UITableViewController {
     
     var selectedUserIDs = [Int]()
     var options: [String] = []
-    var RefreshDocumentsDelegate: RefreshDocumentsListDelegate!
+    weak var refreshDocumentsDelegate: RefreshDocumentsListDelegate?
     
     private let cellId = "cellId"
     private let networkService: NetworkService
@@ -131,7 +131,7 @@ extension AdvancedSearchViewController {
     }
     
     @objc private func handleSearchButtonTapped() {
-        RefreshDocumentsDelegate?.refreshDocuments(selectedUserIDs: selectedUserIDs, options: options)
+        refreshDocumentsDelegate?.refreshDocuments(selectedUserIDs: selectedUserIDs, options: options)
         
         dismiss(animated: true, completion: nil)
     }

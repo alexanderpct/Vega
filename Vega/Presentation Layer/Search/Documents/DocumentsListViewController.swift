@@ -138,7 +138,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
         let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
-        controller.RefreshDocumentsDelegate = self
+        controller.refreshDocumentsDelegate = self
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
