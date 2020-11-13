@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PickOptionsDelegate: class {
+protocol PickOptionsDelegate: AnyObject {
     func didPick(options: [String], with type: PickType?)
 }
 

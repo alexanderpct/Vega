@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol RefreshDocumentsListDelegate: class {
+protocol RefreshDocumentsListDelegate: AnyObject {
     func refreshDocuments(selectedUserIDs: [Int], options: [String])
 }
 

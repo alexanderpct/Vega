@@ -35,7 +35,6 @@ class DocumentsListViewController: UIViewController {
     private let descriptionLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 150))
         label.font = .systemFont(ofSize: 20)
-        label.numberOfLines = 2
         label.textAlignment = .center
         label.numberOfLines = 3
         label.text = "Используйте мобильный интернет или подключитесь к сети Wi-Fi."
@@ -127,8 +126,8 @@ class DocumentsListViewController: UIViewController {
                 self.documents = documents.documents.compactMap { Document(from: $0) }
                 DispatchQueue.main.async {
                     
-                    while let subview = self.view.subviews.last {
-                        subview.removeFromSuperview()
+                    for view in self.view.subviews {
+                        view.removeFromSuperview()
                     }
                     
                     self.setupSearchBar()
@@ -145,8 +144,8 @@ class DocumentsListViewController: UIViewController {
     }
     
     @objc func buttonClicked(sender : UIButton) {
-                    getDocuments()
-                }
+        getDocuments()
+    }
 
 
 }
