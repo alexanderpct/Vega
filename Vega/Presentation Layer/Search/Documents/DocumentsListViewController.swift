@@ -23,6 +23,33 @@ class DocumentsListViewController: UIViewController {
         return iv
     }()
     
+    private let headerLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 150))
+        label.font = .boldSystemFont(ofSize: 40)
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        label.text = "Вы офлайн"
+        return label
+    }()
+    
+    private let descriptionLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 150))
+        label.font = .systemFont(ofSize: 20)
+        label.textAlignment = .center
+        label.numberOfLines = 3
+        label.text = "Используйте мобильный интернет или подключитесь к сети Wi-Fi."
+        return label
+    }()
+    
+    private let refreshButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 150, height: 50))
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 25
+        button.setTitle("Обновить", for: .normal)
+        button.addTarget(self, action:#selector(buttonClicked), for: .touchUpInside)
+        return button
+    }()
+    
     private var timer: Timer?
     private let cellId = "cellId"
     private let searchController = UISearchController(searchResultsController: nil)
@@ -46,8 +73,6 @@ class DocumentsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getDocuments()
-        setupSearchBar()
-        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,6 +102,22 @@ class DocumentsListViewController: UIViewController {
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
         
     }
+    
+    private func setupNetworkErrorLabels() {
+        headerLabel.center.x = self.view.center.x
+        headerLabel.center.y = self.view.center.y - 80
+        
+        descriptionLabel.center.x = self.view.center.x
+        descriptionLabel.center.y = self.view.center.y - 10
+        
+        refreshButton.center.x = self.view.center.x
+        refreshButton.center.y = self.view.center.y + 70
+        
+        self.view.addSubview(headerLabel)
+        self.view.addSubview(descriptionLabel)
+        self.view.addSubview(refreshButton)
+        
+    }
 
     private func getDocuments() {
         networkService.fetchDocuments(keywords: "язык", users: users) { (result) in
@@ -84,13 +125,26 @@ class DocumentsListViewController: UIViewController {
             case .success(let documents):
                 self.documents = documents.documents.compactMap { Document(from: $0) }
                 DispatchQueue.main.async {
+                    
+                    for view in self.view.subviews {
+                        view.removeFromSuperview()
+                    }
+                    
+                    self.setupSearchBar()
+                    self.setupTableView()
                     self.navigationItem.title = "Документов: \(self.documents.count)"
                     self.tableView.reloadData()
                 }
             case .failure(let error):
-                print(error)
+                DispatchQueue.main.async {
+                    self.setupNetworkErrorLabels()
+                }
             }
         }
+    }
+    
+    @objc func buttonClicked(sender : UIButton) {
+        getDocuments()
     }
 
 
@@ -148,7 +202,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
         let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
-        controller.RefreshDocumentsDelegate = self
+        controller.refreshDocumentsDelegate = self
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }

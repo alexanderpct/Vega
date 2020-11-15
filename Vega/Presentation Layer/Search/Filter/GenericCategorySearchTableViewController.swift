@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PickOptionsDelegate {
+protocol PickOptionsDelegate: AnyObject {
     func didPick(options: [String], with type: PickType?)
 }
 
@@ -16,7 +16,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
 
     lazy var checked = [Bool].init(repeating: false, count: values.count)
     
-    var optionsDelegate: PickOptionsDelegate!
+    weak var optionsDelegate: PickOptionsDelegate?
     
     private let networkService: NetworkService
 

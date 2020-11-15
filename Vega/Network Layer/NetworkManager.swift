@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias DocumentsResult = Result<AllDocumentsDTO, HTTP.NetworkError>
+typealias DocumentsResult = Result<AllDocumentsDTO, HTTP.fetchDocumentsError>
 
 protocol VegaNetworkProtocol {
     func subscribeTo(disciplines: String, completion: @escaping (String) -> Void)
@@ -132,7 +132,7 @@ final class NetworkService: VegaNetworkProtocol {
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             if let error = error {
-                print(error)
+                completion(.failure(.connectionError))
                 return
             }
             
@@ -142,7 +142,7 @@ final class NetworkService: VegaNetworkProtocol {
                 let objects = try JSONDecoder().decode(AllDocumentsDTO.self, from: data)
                 completion(.success(objects))
             } catch {
-                print(error)
+                completion(.failure(.decodeError))
                 return
             }
             
