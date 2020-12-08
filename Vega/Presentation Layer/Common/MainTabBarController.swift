@@ -20,7 +20,7 @@ class MainTabBarController: UITabBarController {
         viewControllers = [
             createNewViewController(viewController: DocumentsListViewController(networkService: networkService), title: "Документы", imageName: "doc.fill"),
             createNewViewController(viewController: UpdatesViewController(), title: "Уведомления", imageName: "envelope"),
-            createNewViewController(viewController: ProfileViewController(), title: "Профиль", imageName: "person.fill")
+            createNewViewController(viewController: ProfileViewController(networkService: networkService), title: "Профиль", imageName: "person.fill")
 
         ]
     }

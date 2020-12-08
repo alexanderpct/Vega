@@ -31,10 +31,13 @@ class AdvancedSearchViewController: UITableViewController {
     
     let titles = [["Выбрать пользователей", "Выбрать типы документов", "Выбрать дисциплины", "Выбрать темы"], ["Дата публикации документа", "Рейтинг документа", "Дата загрузки документа"]]
     
+    
     init(networkService: NetworkService, style: UITableView.Style) {
         self.networkService = networkService
         super.init(style: style)
     }
+    
+    
     
     convenience init(networkService: NetworkService, style: UITableView.Style, options: [String]) {
         self.init(networkService: networkService, style: style)

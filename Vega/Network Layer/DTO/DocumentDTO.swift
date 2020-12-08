@@ -9,20 +9,17 @@
 import Foundation
 
 struct AllDocumentsDTO: Decodable {
-    let batchSize: String
-    let batchStart: String
-    let documents: [DocumentDTO]
-    let resultKeywords: [String]
-    let totalCount: String
-    let requestID: String
+    let totalCount, requestID, batchStart, batchSize: String
+        let documents: [DocumentDTO]
+        let resultKeywords: [String]
 
     enum CodingKeys: String, CodingKey {
-        case batchSize = "batch-size"
+        case totalCount = "total-count"
+        case requestID = "request-id"
         case batchStart = "batch-start"
+        case batchSize = "batch-size"
         case documents = "result-docs"
         case resultKeywords = "result-keywords"
-        case totalCount = "total-count"
-        case requestID = "request_id"
     }
 
     init(from decoder: Decoder) throws {
@@ -41,26 +38,21 @@ struct AllDocumentsDTO: Decodable {
 
 // MARK: - ResultDoc
 struct DocumentDTO: Decodable {
-    let id: String
-    let title: String
-    let descriptionHeader: String
-    let descriptionBody: String?
-    let keywords: [String]
-    let comments: [CommentDTO]
-    let rating: String
-    let code: String?
-    let url: String?
+    let id, title, descriptionHeader: String
+        let descriptionBody, code: String?
+        let url: String?
+        let reqRel: String
+        let keywords: [String]
+        let comments: [CommentDTO]
+        let rating: String?
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case descriptionHeader = "description_header"
-        case descriptionBody = "description_body"
-        case keywords
-        case comments
-        case rating
-        case code
-        case url
+        case id, title
+        case descriptionHeader = "description-header"
+        case descriptionBody = "description-body"
+        case code, url
+        case reqRel = "req-rel"
+        case keywords, comments, rating
     }
 
     init(from decoder: Decoder) throws {
@@ -72,9 +64,10 @@ struct DocumentDTO: Decodable {
         descriptionBody = try? container.decode(String.self, forKey: .descriptionBody)
         keywords = try container.decode([String].self, forKey: .keywords)
         comments = try container.decode([CommentDTO].self, forKey: .comments)
-        rating = try container.decode(String.self, forKey: .rating)
+        rating = try? container.decode(String.self, forKey: .rating)
         code = try? container.decode(String.self, forKey: .code)
         url = try? container.decode(String.self, forKey: .url)
+        reqRel = try container.decode(String.self, forKey: .reqRel)
     }
 
 }

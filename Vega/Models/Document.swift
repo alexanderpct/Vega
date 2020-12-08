@@ -23,7 +23,7 @@ struct Document {
         descriptionHeader = dto.descriptionHeader
         descriptionBody = dto.descriptionBody
         comments = dto.comments.map() { Comment(from: $0) }
-        rating = dto.rating
+        rating = dto.rating ?? "0"
         url = dto.url
     }
 }

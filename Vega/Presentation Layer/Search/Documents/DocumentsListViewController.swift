@@ -72,7 +72,12 @@ class DocumentsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        getDocuments()
+        networkService.authorizationAs { (code) in
+            DispatchQueue.main.async{
+                self.getDocuments()
+            }
+        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,7 +125,7 @@ class DocumentsListViewController: UIViewController {
     }
 
     private func getDocuments() {
-        networkService.fetchDocuments(keywords: "язык", users: users) { (result) in
+        networkService.fetchDocuments(keywords: "ЯЗЫК", users: users) { (result) in
             switch result {
             case .success(let documents):
                 self.documents = documents.documents.compactMap { Document(from: $0) }
@@ -137,6 +142,7 @@ class DocumentsListViewController: UIViewController {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
+                    print("🥳😎❤️\(error)")
                     self.setupNetworkErrorLabels()
                 }
             }

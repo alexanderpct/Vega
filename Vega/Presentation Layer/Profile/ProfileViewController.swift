@@ -15,6 +15,18 @@ class ProfileViewController: UIViewController {
     private let cellId = "cellId"
     
     private let titles = ["Подписки", "Настройки", "Загрузить", "История", "Выйти"]
+    
+    private let networkService: VegaNetworkProtocol
+    
+    init(networkService: VegaNetworkProtocol) {
+        self.networkService = networkService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +86,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            navigationController?.pushViewController(SubscriptionsViewController(), animated: true)
+            navigationController?.pushViewController(SubscriptionsViewController(networkService: networkService as! NetworkService), animated: true)
         case 1:
             navigationController?.pushViewController(SettingsViewController(), animated: true)
         case 2:

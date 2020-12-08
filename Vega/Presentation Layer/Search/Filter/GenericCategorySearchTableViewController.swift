@@ -126,7 +126,7 @@ extension GenericCategorySearchTableViewController {
 
     private func fetchDisciplines() {
         networkService.fetchDisciplines { (response) in
-            self.values = response?.disciplines.compactMap { $0.title } ?? []
+            self.values = response?.compactMap { $0.title } ?? []
             self.reloadTableView()
         }
     }

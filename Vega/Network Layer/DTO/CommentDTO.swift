@@ -9,21 +9,21 @@
 import Foundation
 
 struct CommentDTO: Decodable {
-    let userId: String
-    let username: String
-    let comment: String
+    let userID, userName, comment, updated: String
 
     enum CodingKeys: String, CodingKey {
-        case userId = "userid"
-        case username
-        case comment
+        case userID = "user-id"
+        case userName = "user-name"
+        case comment, updated
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        userId = try container.decode(String.self, forKey: .userId)
-        username = try container.decode(String.self, forKey: .username)
+        userID = try container.decode(String.self, forKey: .userID)
+        userName = try container.decode(String.self, forKey: .userName)
         comment = try container.decode(String.self, forKey: .comment)
+        updated = try container.decode(String.self, forKey: .updated)
+        
     }
 }
