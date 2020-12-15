@@ -112,14 +112,14 @@ extension GenericCategorySearchTableViewController {
 
     private func fetchDocTypes() {
         networkService.fetchDocTypes { (response) in
-            self.values = response?.doctypes.compactMap { $0.title } ?? []
+            self.values = response?.compactMap { $0.title } ?? []
             self.reloadTableView()
         }
     }
 
     private func fetchUsers() {
         networkService.fetchUsers { (response) in
-            self.values = response?.users.compactMap { $0.name } ?? []
+            self.values = response?.compactMap { $0.name } ?? []
             self.reloadTableView()
         }
     }
@@ -133,7 +133,7 @@ extension GenericCategorySearchTableViewController {
 
     private func fetchThemes() {
         networkService.fetchThemes { (response) in
-            self.values = response?.themes.compactMap { $0.title } ?? []
+            self.values = response?.compactMap { $0.title } ?? []
             self.reloadTableView()
         }
     }

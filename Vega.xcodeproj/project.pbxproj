@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */; };
 		DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */; };
 		E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372557253DB51400E06E2A /* AppDelegate.swift */; };
 		E537255A253DB51400E06E2A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372559253DB51400E06E2A /* SceneDelegate.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
 		DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTableViewCell.swift; sourceTree = "<group>"; };
 		E5372554253DB51400E06E2A /* Vega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5372557253DB51400E06E2A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 			children = (
 				E53725CE253DB81A00E06E2A /* DocumentsListViewController.swift */,
 				E53725D0253DB81A00E06E2A /* DocumentListTableViewCell.swift */,
+				DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */,
 				E53725D1253DB81A00E06E2A /* DocumentViewController.swift */,
 			);
 			path = Documents;
@@ -281,11 +284,11 @@
 		E53725D9253DB81A00E06E2A /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				E53725DE253DB81A00E06E2A /* SubscriptionViewController.swift */,
 				E53725DA253DB81A00E06E2A /* UploadViewController.swift */,
 				E53725DB253DB81A00E06E2A /* UpdatesViewController.swift */,
 				E53725DC253DB81A00E06E2A /* ProfileViewController.swift */,
 				E53725DD253DB81A00E06E2A /* SettingsViewController.swift */,
-				E53725DE253DB81A00E06E2A /* SubscriptionViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				E53725EA253DB81A00E06E2A /* ProfileViewController.swift in Sources */,
 				E5372610253DC2B900E06E2A /* DisciplinesDTO.swift in Sources */,
 				E53725F4253DB81E00E06E2A /* DocumentTableViewCell.swift in Sources */,
+				DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */,
 				E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */,
 				E53725F3253DB81E00E06E2A /* DisciplinesTableViewCell.swift in Sources */,
 				E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */,

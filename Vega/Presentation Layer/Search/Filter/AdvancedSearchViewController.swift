@@ -155,21 +155,21 @@ extension AdvancedSearchViewController: PickOptionsDelegate {
     func didPick(options: [String], with type: PickType?) {
 
         if type == PickType.themes {
-            networkService.fetchDocuments(keywords: "язык", themes: options) { (documents) in
+            networkService.fetchDocuments(keywords: "ЯЗЫК", themes: options, batchStart: "1", batchSize: "20") { (documents) in
             }
         }
-        
+
         else if type == PickType.users {
             self.options = options
             selectedUserIDs = []
             if options.contains("admin"){selectedUserIDs.append(1)}
             if options.contains("testprep"){selectedUserIDs.append(2)}
             if options.contains("teststud"){selectedUserIDs.append(3)}
-            
+
         }
         self.tableView.reloadData()
-        
-        
-        
+
+
+
     }
 }

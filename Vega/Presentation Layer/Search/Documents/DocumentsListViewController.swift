@@ -52,11 +52,14 @@ class DocumentsListViewController: UIViewController {
     
     private var timer: Timer?
     private let cellId = "cellId"
+    private let tableviewloadingcellid = "tableviewloadingcellid"
     private let searchController = UISearchController(searchResultsController: nil)
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
     private var users: [Int] = []
     private var options: [String] = []
+    private var isLoading: Bool = false
+    private var totalCount: String = "0"
     
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
@@ -84,6 +87,7 @@ class DocumentsListViewController: UIViewController {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.sizeToFit()
     }
 
     private func setupTableView() {
@@ -93,6 +97,8 @@ class DocumentsListViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = 120
         tableView.register(DocumentListTableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(LoadingTableViewCell.self, forCellReuseIdentifier: tableviewloadingcellid)
+        
     }
     
     // MARK: - Private methods
@@ -101,6 +107,7 @@ class DocumentsListViewController: UIViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.showsSearchResultsButton = true;
         searchController.searchBar.showsCancelButton = false
@@ -123,11 +130,15 @@ class DocumentsListViewController: UIViewController {
         self.view.addSubview(refreshButton)
         
     }
+    
 
     private func getDocuments() {
-        networkService.fetchDocuments(keywords: "ЯЗЫК", users: users) { (result) in
+        
+        
+        networkService.fetchDocuments(keywords: "ЯЗЫК", users: users, batchStart: "1", batchSize: "20") { (result) in
             switch result {
             case .success(let documents):
+                self.totalCount =  documents.totalCount
                 self.documents = documents.documents.compactMap { Document(from: $0) }
                 DispatchQueue.main.async {
                     
@@ -137,7 +148,7 @@ class DocumentsListViewController: UIViewController {
                     
                     self.setupSearchBar()
                     self.setupTableView()
-                    self.navigationItem.title = "Документов: \(self.documents.count)"
+                    self.navigationItem.title = "Документов: \(self.totalCount)"
                     self.tableView.reloadData()
                 }
             case .failure(let error):
@@ -159,17 +170,44 @@ class DocumentsListViewController: UIViewController {
 // MARK: - UITableView
 extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if isLoading == true{
+            return 2
+        } else{
+            return 1
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return documents.count
+        
+        if section == 0 {
+            
+            return documents.count
+            
+        } else if section == 1 {
+            
+            return 1
+            
+        } else {
+            
+            return 0
+            
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! DocumentListTableViewCell
-        let document = documents[indexPath.row]
-
-        cell.configure(with: document.title, description: document.descriptionBody ?? "", rating: document.rating, comments: "\(document.comments.count)")
-
-        return cell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! DocumentListTableViewCell
+            let document = documents[indexPath.row]
+            
+            cell.configure(with: document.title, description: document.descriptionBody ?? "", rating: document.rating, comments: "\(document.comments.count)")
+            
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "tableviewloadingcellid", for: indexPath) as! LoadingTableViewCell
+            return cell
+        }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -177,7 +215,43 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
         let controller = DocumentViewController(with: documents[indexPath.row])
         navigationController?.pushViewController(controller, animated: true)
     }
-
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        
+        if (offsetY > contentHeight - scrollView.frame.height * 4) && !isLoading {
+            loadMoreData()
+        }
+    }
+    
+    func loadMoreData() {
+        
+        if documents.count < Int(totalCount)! {
+            if !self.isLoading {
+                self.isLoading = true
+                
+                networkService.fetchDocuments(keywords: "ЯЗЫК", users: users, batchStart: String(documents.count + 1), batchSize: "20") { (result) in
+                    switch result {
+                    case .success(let documents):
+                        self.documents += documents.documents.compactMap { Document(from: $0) }
+                        DispatchQueue.main.async {
+                            self.isLoading = false
+                            self.tableView.reloadData()
+                            
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            print("🥳😎❤️\(error)")
+                        }
+                    }
+                }
+                
+            }
+            
+        }
+    }
+    
 }
 
 // MARK: - UISearchBarDelegate
@@ -191,12 +265,13 @@ extension DocumentsListViewController: UISearchBarDelegate {
                 return
             }
             
-            self.networkService.fetchDocuments(keywords: searchText, completion: { (result) in
+            self.networkService.fetchDocuments(keywords: searchText, batchStart: "1", batchSize: "20", completion: { (result) in
                 switch result {
                 case .success(let documents):
+                    self.totalCount =  documents.totalCount
                     self.documents = documents.documents.compactMap { Document(from: $0) }
                     DispatchQueue.main.async {
-                        self.navigationItem.title = "Документов: \(self.documents.count)"
+                        self.navigationItem.title = "Документов: \(self.totalCount)"
                         self.tableView.reloadData()
                     }
                 case .failure(let error):
@@ -234,12 +309,13 @@ extension DocumentsListViewController: RefreshDocumentsListDelegate{
     func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
         self.options = options
         self.users = selectedUserIDs
-        self.networkService.fetchDocuments(keywords: "язык", users: selectedUserIDs, completion: { (result) in
+        self.networkService.fetchDocuments(keywords: "ЯЗЫК", users: selectedUserIDs, batchStart: "1", batchSize: "20", completion: { (result) in
             switch result {
             case .success(let documents):
+                self.totalCount =  documents.totalCount
                 self.documents = documents.documents.compactMap { Document(from: $0) }
                 DispatchQueue.main.async {
-                    self.navigationItem.title = "Документов: \(self.documents.count)"
+                    self.navigationItem.title = "Документов: \(self.totalCount)"
                     self.tableView.reloadData()
                 }
             case .failure(let error):

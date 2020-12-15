@@ -20,8 +20,8 @@ protocol VegaNetworkProtocol {
     func fetchHistory(completion: @escaping (AllHistories?) -> Void)
     func fetchUpdates(completion: @escaping (AllUpdates?) -> Void)
     func fetchSubscribedDisciplines(completion: @escaping (SubscribedDisciplinesDTO?) -> Void)
-    func fetchDocuments(keywords: String, completion: @escaping (DocumentsResult) -> Void)
-    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(keywords: String, batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(keywords: String, users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
     func authorizationAs(completion: @escaping (String) -> Void)
 }
 
@@ -137,12 +137,12 @@ final class NetworkService: VegaNetworkProtocol {
         genericFetchFunction(url: urlString, completion: completion)
     }
     
-    func fetchDocuments(keywords: String, completion: @escaping (DocumentsResult) -> Void) {
-        return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], completion: completion)
+    func fetchDocuments(keywords: String, batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
+        return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
     }
     
-    func fetchDocuments(keywords: String, users: [Int], completion: @escaping (DocumentsResult) -> Void) {
-        return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], completion: completion)
+    func fetchDocuments(keywords: String, users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
+        return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
     }
     
     
@@ -151,6 +151,8 @@ final class NetworkService: VegaNetworkProtocol {
                         authors: [String] = [],
                         users: [Int] = [],
                         themes: [String] = [],
+                        batchStart: String,
+                        batchSize: String,
                         completion: @escaping (DocumentsResult) -> Void) {
         let urlString = "\(baseURL)/search"
         guard let url = URL(string: urlString) else { return }
@@ -194,13 +196,13 @@ final class NetworkService: VegaNetworkProtocol {
         
         //batch-start
         data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"batch=start\"\r\n\r\n".data(using: .utf8)!)
-        data.append("1".data(using: .utf8)!)
+        data.append("Content-Disposition: form-data; name=\"batch-start\"\r\n\r\n".data(using: .utf8)!)
+        data.append(batchStart.data(using: .utf8)!)
         
         //batch-size
         data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
         data.append("Content-Disposition: form-data; name=\"batch-size\"\r\n\r\n".data(using: .utf8)!)
-        data.append("20".data(using: .utf8)!)
+        data.append(batchSize.data(using: .utf8)!)
         
         //jsonData
         data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
@@ -232,20 +234,20 @@ final class NetworkService: VegaNetworkProtocol {
                 let objects = try JSONDecoder().decode(AllDocumentsDTO.self, from: data)
                 completion(.success(objects))
             } catch let DecodingError.dataCorrupted(context) {
-                    print(context)
-                } catch let DecodingError.keyNotFound(key, context) {
-                    print("Key '\(key)' not found:", context.debugDescription)
-                    print("codingPath:", context.codingPath)
-                } catch let DecodingError.valueNotFound(value, context) {
-                    print("Value '\(value)' not found:", context.debugDescription)
-                    print("codingPath:", context.codingPath)
-                } catch let DecodingError.typeMismatch(type, context)  {
-                    print("Type '\(type)' mismatch:", context.debugDescription)
-                    print("codingPath:", context.codingPath)
-                } catch {
-                    print("error: ", error)
+                print(context)
+            } catch let DecodingError.keyNotFound(key, context) {
+                print("Key '\(key)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.valueNotFound(value, context) {
+                print("Value '\(value)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.typeMismatch(type, context)  {
+                print("Type '\(type)' mismatch:", context.debugDescription)
+                print("codingPath:", context.codingPath)
             } catch {
-
+                print("error: ", error)
+            } catch {
+                
                 completion(.failure(.decodeError))
                 return
             }

@@ -9,30 +9,24 @@
 import Foundation
 
 // MARK: - Doctypes
-struct AllDocTypes: Codable {
-    let doctypes: [Doctype]
-    let count: String
-}
 
-struct Doctype: Codable {
+typealias AllDocTypes = [DocType]
+
+
+struct DocType: Codable {
     let id, title: String
 }
 
 // MARK: - Users
-struct AllUsers: Codable {
-    let users: [User]
-    let count: String
-}
+typealias AllUsers = [User]
 
 struct User: Codable {
     let id, name: String
 }
 
 // MARK: - Theme
-struct AllThemes: Codable {
-    let themes: [Theme]
-    let count: String
-}
+typealias AllThemes = [Theme]
+
 
 struct Theme: Codable {
     let id, index: String
