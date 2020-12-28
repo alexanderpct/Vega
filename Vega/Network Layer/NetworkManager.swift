@@ -20,9 +20,10 @@ protocol VegaNetworkProtocol {
     func fetchHistory(completion: @escaping (AllHistories?) -> Void)
     func fetchUpdates(completion: @escaping (AllUpdates?) -> Void)
     func fetchSubscribedDisciplines(completion: @escaping (SubscribedDisciplinesDTO?) -> Void)
-    func fetchDocuments(keywords: String, batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
-    func fetchDocuments(keywords: String, users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(keywords: [String], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(keywords: [String], users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
     func authorizationAs(completion: @escaping (String) -> Void)
+    func fetchInitialForm(searchText: String, completion: @escaping (InitialForms?) -> Void)
 }
 
 final class NetworkService: VegaNetworkProtocol {
@@ -137,17 +138,65 @@ final class NetworkService: VegaNetworkProtocol {
         genericFetchFunction(url: urlString, completion: completion)
     }
     
-    func fetchDocuments(keywords: String, batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
+    func fetchDocuments(keywords: [String], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
         return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
     }
     
-    func fetchDocuments(keywords: String, users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
+    func fetchDocuments(keywords: [String], users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
         return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
+    }
+    
+    func fetchInitialForm(searchText: String, completion: @escaping (InitialForms?) -> Void){
+//        print(searchText)
+        let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+//        print(encodedText)
+        let urlString = "\(baseURL)/com?text=\(encodedText)"
+        guard let url = URL(string: urlString) else { return }
+
+        let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 120)
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            guard let data = data else { return }
+            
+            if let jsonString = String(data: data, encoding: .utf8) {
+                        print("✅Итог преобразований: \(jsonString)")
+            }
+            
+            
+            do {
+                let objects = try JSONDecoder().decode(InitialForms.self, from: data)
+                completion(objects)
+            } catch let DecodingError.dataCorrupted(context) {
+                print(context)
+            } catch let DecodingError.keyNotFound(key, context) {
+                print("Key '\(key)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.valueNotFound(value, context) {
+                print("Value '\(value)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.typeMismatch(type, context)  {
+                print("Type '\(type)' mismatch:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch {
+                print("error: ", error)
+                return
+            }
+            
+
+
+        }.resume()
+        
+        
     }
     
     
     
-    func fetchDocuments(keywords: String,
+    func fetchDocuments(keywords: [String],
                         authors: [String] = [],
                         users: [Int] = [],
                         themes: [String] = [],
@@ -157,7 +206,7 @@ final class NetworkService: VegaNetworkProtocol {
         let urlString = "\(baseURL)/search"
         guard let url = URL(string: urlString) else { return }
         
-        let json: [String: Any] = ["keywords" : ["\(keywords)"],
+        let json: [String: Any] = ["keywords" : keywords,
                                    "disciplines" : [],
                                    "themes" : themes,
                                    "doctypes" : [],
@@ -229,6 +278,8 @@ final class NetworkService: VegaNetworkProtocol {
 //            if let jsonString = String(data: data, encoding: .utf8) {
 //                print("✅\(jsonString)")
 //            }
+            print(batchStart)
+            print(batchSize)
 
             do {
                 let objects = try JSONDecoder().decode(AllDocumentsDTO.self, from: data)
@@ -246,9 +297,6 @@ final class NetworkService: VegaNetworkProtocol {
                 print("codingPath:", context.codingPath)
             } catch {
                 print("error: ", error)
-            } catch {
-                
-                completion(.failure(.decodeError))
                 return
             }
         }).resume()

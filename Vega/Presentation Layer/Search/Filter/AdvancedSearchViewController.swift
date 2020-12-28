@@ -155,7 +155,7 @@ extension AdvancedSearchViewController: PickOptionsDelegate {
     func didPick(options: [String], with type: PickType?) {
 
         if type == PickType.themes {
-            networkService.fetchDocuments(keywords: "ЯЗЫК", themes: options, batchStart: "1", batchSize: "20") { (documents) in
+            networkService.fetchDocuments(keywords: ["ЯЗЫК"], themes: options, batchStart: "1", batchSize: "20") { (documents) in
             }
         }
 

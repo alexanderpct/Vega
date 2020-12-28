@@ -61,6 +61,10 @@ class DocumentsListViewController: UIViewController {
     private var isLoading: Bool = false
     private var totalCount: String = "0"
     
+    var keywords = [String]()
+    var searchTextPartsArrayWithoutSpaces = [String]()
+    var initialFormsDataArray = [[String]]()
+    
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
         super.init(nibName: nil, bundle: nil)
@@ -77,7 +81,7 @@ class DocumentsListViewController: UIViewController {
         super.viewDidLoad()
         networkService.authorizationAs { (code) in
             DispatchQueue.main.async{
-                self.getDocuments()
+                self.getAllDocuments()
             }
         }
 
@@ -110,8 +114,22 @@ class DocumentsListViewController: UIViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
         searchController.searchBar.showsSearchResultsButton = true;
-        searchController.searchBar.showsCancelButton = false
+        searchController.searchBar.showsCancelButton = true
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        if let cancelButton : UIButton = searchController.searchBar.value(forKey: "cancelButton") as? UIButton{
+            cancelButton.isEnabled = true
+        }
+        
+        let barButtonAppearanceInSearchBar: UIBarButtonItem?
+            barButtonAppearanceInSearchBar = UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+        barButtonAppearanceInSearchBar?.image = UIImage(systemName: "line.horizontal.3.decrease.circle")?.withRenderingMode(.alwaysTemplate)
+            barButtonAppearanceInSearchBar?.tintColor = UIColor.blue
+            barButtonAppearanceInSearchBar?.title = nil
+        barButtonAppearanceInSearchBar?.customView?.translatesAutoresizingMaskIntoConstraints = false
+        barButtonAppearanceInSearchBar?.customView?.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        barButtonAppearanceInSearchBar?.customView?.heightAnchor.constraint(equalToConstant: 24).isActive = true
+
+
         
     }
     
@@ -130,12 +148,11 @@ class DocumentsListViewController: UIViewController {
         self.view.addSubview(refreshButton)
         
     }
-    
 
-    private func getDocuments() {
+    
+    private func getAllDocuments() {
         
-        
-        networkService.fetchDocuments(keywords: "ЯЗЫК", users: users, batchStart: "1", batchSize: "20") { (result) in
+        networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: users, batchStart: "1", batchSize: "20") { (result) in
             switch result {
             case .success(let documents):
                 self.totalCount =  documents.totalCount
@@ -160,8 +177,37 @@ class DocumentsListViewController: UIViewController {
         }
     }
     
+    private func getDocuments(keywords: [String]){
+        print("🍑✅\(keywords)")
+        
+        networkService.fetchDocuments(keywords: keywords, users: users, batchStart: "1", batchSize: "20") { (result) in
+            switch result {
+            case .success(let documents):
+                self.totalCount =  documents.totalCount
+                self.documents = documents.documents.compactMap { Document(from: $0) }
+                DispatchQueue.main.async {
+                    
+                    for view in self.view.subviews {
+                        view.removeFromSuperview()
+                    }
+                    
+                    self.setupSearchBar()
+                    self.setupTableView()
+                    self.navigationItem.title = "Документов: \(self.totalCount)"
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print("🥳😎❤️\(error)")
+                    self.setupNetworkErrorLabels()
+                }
+            }
+        }
+
+    }
+    
     @objc func buttonClicked(sender : UIButton) {
-        getDocuments()
+        getAllDocuments()
     }
 
 
@@ -231,7 +277,7 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
             if !self.isLoading {
                 self.isLoading = true
                 
-                networkService.fetchDocuments(keywords: "ЯЗЫК", users: users, batchStart: String(documents.count + 1), batchSize: "20") { (result) in
+                networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: users, batchStart: String(documents.count + 1), batchSize: "20") { (result) in
                     switch result {
                     case .success(let documents):
                         self.documents += documents.documents.compactMap { Document(from: $0) }
@@ -257,33 +303,82 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
 // MARK: - UISearchBarDelegate
 extension DocumentsListViewController: UISearchBarDelegate {
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-            
-            if searchText == "" {
-                return
-            }
-            
-            self.networkService.fetchDocuments(keywords: searchText, batchStart: "1", batchSize: "20", completion: { (result) in
-                switch result {
-                case .success(let documents):
-                    self.totalCount =  documents.totalCount
-                    self.documents = documents.documents.compactMap { Document(from: $0) }
-                    DispatchQueue.main.async {
-                        self.navigationItem.title = "Документов: \(self.totalCount)"
-                        self.tableView.reloadData()
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
+        controller.refreshDocumentsDelegate = self
+        let navigationController = UINavigationController(rootViewController: controller)
+        present(navigationController, animated: true, completion: nil)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
+        
+        
+        keywords = []
+        initialFormsDataArray = []
+        
+
+        let searchTextPartsArray = searchBar.text!.split(separator: ",")
+                    searchTextPartsArrayWithoutSpaces = []
+                    for part in searchTextPartsArray{
+                        if part.first == " "{
+                            var temp = part
+                            temp.removeFirst()
+                            searchTextPartsArrayWithoutSpaces.append(String(temp))
+                        } else {
+                            searchTextPartsArrayWithoutSpaces.append(String(part))
+                        }
                     }
-                case .failure(let error):
-                    print(error)
-                }
-            })
-        }
+//                    print("SearchTextPartsArrayWithoutSpaces: \(searchTextPartsArrayWithoutSpaces)")
+        
+                    let myGroup = DispatchGroup()
+        
+                    for part in searchTextPartsArrayWithoutSpaces{
+                        
+                        var temp = [String]() //for IFViewController
+                        temp.append(part)
+        
+                        var normForms = [String]()
+        
+                        myGroup.enter()
+        
+                        self.networkService.fetchInitialForm(searchText: part) { result in
+        
+                            guard let result = result else { return }
+                            if result.shingles3Sum != "0"{
+                                for shingle in result.shingles3{
+                                    normForms.append(shingle.norm)
+                                    temp.append(shingle.norm)
+                                }
+                            } else if result.shingles2Sum != "0"{
+                                normForms.append(result.shingles2.first!.norm)
+                                temp.append(result.shingles2.first!.norm)
+                            } else if result.terms.first != nil  {
+                                normForms.append(result.terms.first!.norm)
+                                temp.append(result.terms.first!.norm)
+                            }
+//                            print("1-stNormforms \(normForms)")
+                            self.initialFormsDataArray.append(temp)
+                            self.keywords += normForms
+        
+                            myGroup.leave()
+        
+                        }
+        
+        
+        
+                    }
+        
+                    myGroup.notify(queue: .main) {
+                        print("Keywords: \(self.keywords)")
+                        self.getDocuments(keywords: self.keywords)
+                    }
+        
+
+        
     }
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
-        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
-        controller.refreshDocumentsDelegate = self
+        let controller = InitialFormsViewController(search: searchTextPartsArrayWithoutSpaces, initialFroms: keywords, initialFormsDataArray: initialFormsDataArray)
         let navigationController = UINavigationController(rootViewController: controller)
         present(navigationController, animated: true, completion: nil)
     }
@@ -293,7 +388,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
     }
 
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchController.searchBar.showsCancelButton = false
+        searchController.searchBar.showsCancelButton = true
     }
 
 }
@@ -309,7 +404,7 @@ extension DocumentsListViewController: RefreshDocumentsListDelegate{
     func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
         self.options = options
         self.users = selectedUserIDs
-        self.networkService.fetchDocuments(keywords: "ЯЗЫК", users: selectedUserIDs, batchStart: "1", batchSize: "20", completion: { (result) in
+        self.networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: selectedUserIDs, batchStart: "1", batchSize: "20", completion: { (result) in
             switch result {
             case .success(let documents):
                 self.totalCount =  documents.totalCount
