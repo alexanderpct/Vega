@@ -174,6 +174,7 @@ class DocumentsListViewController: UIViewController {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
+                    self.navigationItem.title = ""
                     print("🥳😎❤️\(error)")
                     self.setupNetworkErrorLabels()
                 }

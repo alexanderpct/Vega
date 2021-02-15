@@ -18,7 +18,7 @@ class SubscriptionsViewController: UIViewController {
     private var pickedDisciplines: [Discipline] = []
     private let networkService: VegaNetworkProtocol
     
-    lazy var checked = [Bool].init(repeating: false, count: allDisciplines.count)
+//    lazy var checked = [Bool].init(repeating: false, count: allDisciplines.count)
     
     var tableView: UITableView!
     
@@ -42,7 +42,7 @@ class SubscriptionsViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupUI()
-        fetchDisciplines()
+        fetchSubscribedDisciplines()
         segmentedControl.addTarget(self, action: #selector(handleControl(_:)), for: .valueChanged)
 
         let rightButton = UIBarButtonItem(title: "Подписаться", style: .plain, target: self, action: #selector(handleConfirmButtonTapped))
@@ -100,7 +100,7 @@ class SubscriptionsViewController: UIViewController {
         string.removeLast()
         self.networkService.subscribeTo(disciplines: string) { (good) in
             DispatchQueue.main.async{
-                self.fetchDisciplines()
+                self.fetchSubscribedDisciplines()
             }
         }
 
@@ -116,6 +116,7 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        cell.accessoryType = .none
         cell.textLabel?.text = disciplines[indexPath.row].title
         cell.selectionStyle = .none
         cell.textLabel?.numberOfLines = 0
@@ -125,7 +126,7 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
         } else {
             if pickedDisciplines.contains(where: { $0.title == disciplines[indexPath.row].title }){
                 cell.accessoryType = .checkmark
-                checked[indexPath.row] = true
+ //               checked[indexPath.row] = true
             }
         }
         
@@ -141,7 +142,7 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
             if segmentedControl.selectedSegmentIndex != 0 {
                 if cell.accessoryType == .checkmark {
                     cell.accessoryType = .none
-                    checked[indexPath.row] = false
+ //                   checked[indexPath.row] = false
                     if pickedDisciplines.contains(where: { $0.title == disciplines[indexPath.row].title }){
                         if let indexToRemove = pickedDisciplines.firstIndex(where: { $0.title == disciplines[indexPath.row].title }){
                             pickedDisciplines.remove(at: indexToRemove)
@@ -149,7 +150,7 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
                     }
                 } else {
                     cell.accessoryType = .checkmark
-                    checked[indexPath.row] = true
+ //                   checked[indexPath.row] = true
                     pickedDisciplines.append(disciplines[indexPath.row])
                 }
             }
@@ -169,16 +170,12 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
 
 extension SubscriptionsViewController {
     
-    private func fetchDisciplines() {
-        fetchSubscribedDisciplines()
-        fetchAllDisciplines()
-    }
-    
     private func fetchSubscribedDisciplines() {
         self.networkService.fetchSubscribedDisciplines { (disciplinesresult) in
             self.myDisciplines = disciplinesresult?.subscribedDisciplines.compactMap { Discipline(from: $0) } ?? []
             DispatchQueue.main.async{
                 self.pickedDisciplines = self.myDisciplines
+                self.fetchAllDisciplines()
             }
         }
     }

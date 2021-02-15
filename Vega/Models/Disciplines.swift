@@ -25,7 +25,7 @@ struct SubscribedDisciplines {
 
     init(from dto: SubscribedDisciplinesDTO) {
         subscribedDisciplines = dto.subscribedDisciplines.map { Discipline(from: $0) }
-        delivery = dto.delivery
+        delivery = dto.delivery ?? "1" //когда отписываемся ото всех дисциплин приходит NULL
     }
 }
 

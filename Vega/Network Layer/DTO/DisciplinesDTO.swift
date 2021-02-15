@@ -14,7 +14,7 @@ typealias AllDisciplinesDTO = [DisciplineDTO]
 // MARK: - Subscribed Disciplines
 struct SubscribedDisciplinesDTO: Codable {
     let subscribedDisciplines: [DisciplineDTO]
-    let delivery: String
+    let delivery: String? //когда отписываемся ото всех дисциплин приходит NULL
 
     enum CodingKeys: String, CodingKey {
         case subscribedDisciplines = "subscribed-disciplines"
