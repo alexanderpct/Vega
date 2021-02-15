@@ -28,6 +28,7 @@ class SubscriptionsViewController: UIViewController {
         return control
     }()
     
+
     init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
         super.init(nibName: nil, bundle: nil)
