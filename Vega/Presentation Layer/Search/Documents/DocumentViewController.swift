@@ -138,7 +138,7 @@ extension DocumentViewController: UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! DocumentTableViewCell
         cell.commentLabel.text = comment.comment
-        cell.authorLabel.text = comment.username
+        cell.authorLabel.text = comment.userName
         return cell
     }
     

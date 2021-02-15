@@ -10,12 +10,14 @@ import Foundation
 
 struct Comment {
     let id: String
-    let username: String
+    let userName: String
     let comment: String
+    let updated: String
 
     init(from dto: CommentDTO) {
-        id = dto.userId
-        username = dto.username
+        id = dto.userID
+        userName = dto.userName
         comment = dto.comment
+        updated = dto.updated
     }
 }

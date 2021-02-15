@@ -11,23 +11,19 @@ import Foundation
 // MARK: - All Disciplines
 struct AllDisciplines    {
     let disciplines: [Discipline]
-    let count: String
 
     init(from dto: AllDisciplinesDTO) {
-        disciplines = dto.disciplines.map { Discipline(from: $0) }
-        count = dto.count
+        disciplines = dto.map { Discipline(from: $0) }
     }
 }
 
 
 // MARK: - Subscribed Disciplines
 struct SubscribedDisciplines {
-    let count: String
     let subscribedDisciplines: [Discipline]
     let delivery: String
 
     init(from dto: SubscribedDisciplinesDTO) {
-        count = dto.count
         subscribedDisciplines = dto.subscribedDisciplines.map { Discipline(from: $0) }
         delivery = dto.delivery
     }

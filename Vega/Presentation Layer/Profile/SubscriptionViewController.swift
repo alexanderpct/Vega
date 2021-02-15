@@ -16,6 +16,7 @@ class SubscriptionsViewController: UIViewController {
     private var myDisciplines: [Discipline] = []
     private var disciplines: [Discipline] = []
     private var pickedDisciplines: [Discipline] = []
+    private let networkService: NetworkService
     
     lazy var checked = [Bool].init(repeating: false, count: allDisciplines.count)
     
@@ -27,6 +28,15 @@ class SubscriptionsViewController: UIViewController {
         return control
     }()
     
+    init(networkService: NetworkService) {
+        self.networkService = networkService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -37,6 +47,10 @@ class SubscriptionsViewController: UIViewController {
         let rightButton = UIBarButtonItem(title: "Подписаться", style: .plain, target: self, action: #selector(handleConfirmButtonTapped))
         self.navigationItem.rightBarButtonItem = rightButton
         self.navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        segmentedControl.selectedSegmentIndex = 0
+        disciplines = myDisciplines
+        
         
     }
     
@@ -79,11 +93,16 @@ class SubscriptionsViewController: UIViewController {
     }
     
     @objc private func handleConfirmButtonTapped() {
-//        let picked = pickedDisciplines.compactMap { Int($0.id) }
-//        print(picked)
-//        NetworkManager.shared.subscribeTo(disciplines: "119, 120") { (good) in
-//            print(good)
-//        }
+        let picked = pickedDisciplines.compactMap { Int($0.id) }
+        var string = "\(picked)"
+        string.removeFirst()
+        string.removeLast()
+        self.networkService.subscribeTo(disciplines: string) { (good) in
+            DispatchQueue.main.async{
+                self.fetchDisciplines()
+            }
+        }
+
     }
     
 }
@@ -100,10 +119,13 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
         cell.selectionStyle = .none
         cell.textLabel?.numberOfLines = 0
         
-        if !checked[indexPath.row] {
+        if segmentedControl.selectedSegmentIndex == 0 {
             cell.accessoryType = .none
-        } else if checked[indexPath.row] {
-            cell.accessoryType = .checkmark
+        } else {
+            if pickedDisciplines.contains(where: { $0.title == disciplines[indexPath.row].title }){
+                cell.accessoryType = .checkmark
+                checked[indexPath.row] = true
+            }
         }
         
         return cell
@@ -115,12 +137,20 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
-            if cell.accessoryType == .checkmark {
-                cell.accessoryType = .none
-                checked[indexPath.row] = false
-            } else {
-                cell.accessoryType = .checkmark
-                checked[indexPath.row] = true
+            if segmentedControl.selectedSegmentIndex != 0 {
+                if cell.accessoryType == .checkmark {
+                    cell.accessoryType = .none
+                    checked[indexPath.row] = false
+                    if pickedDisciplines.contains(where: { $0.title == disciplines[indexPath.row].title }){
+                        if let indexToRemove = pickedDisciplines.firstIndex(where: { $0.title == disciplines[indexPath.row].title }){
+                            pickedDisciplines.remove(at: indexToRemove)
+                        }
+                    }
+                } else {
+                    cell.accessoryType = .checkmark
+                    checked[indexPath.row] = true
+                    pickedDisciplines.append(disciplines[indexPath.row])
+                }
             }
         }
         
@@ -139,20 +169,28 @@ extension SubscriptionsViewController: UITableViewDelegate, UITableViewDataSourc
 extension SubscriptionsViewController {
     
     private func fetchDisciplines() {
-//        fetchSubscribedDisciplines()
-//        fetchAllDisciplines()
+        fetchSubscribedDisciplines()
+        fetchAllDisciplines()
     }
     
-//    private func fetchSubscribedDisciplines() {
-//        NetworkManager.shared.fetchSubscribedDisciplines { (response) in
-//            self.myDisciplines = response?.subscribedDisciplines ?? []
-//        }
-//    }
-//
-//    private func fetchAllDisciplines() {
-//        NetworkManager.shared.fetchDisciplines { (response) in
-//            self.allDisciplines = response?.disciplines ?? []
-//        }
-//    }
-    
+    private func fetchSubscribedDisciplines() {
+        self.networkService.fetchSubscribedDisciplines { (disciplinesresult) in
+            self.myDisciplines = disciplinesresult?.subscribedDisciplines.compactMap { Discipline(from: $0) } ?? []
+            DispatchQueue.main.async{
+                self.pickedDisciplines = self.myDisciplines
+            }
+        }
+    }
+
+    private func fetchAllDisciplines() {
+        self.networkService.fetchDisciplines { (disciplines) in
+            self.allDisciplines = disciplines?.compactMap { Discipline(from: $0) } ?? []
+            DispatchQueue.main.async{
+                self.segmentedControl.selectedSegmentIndex = 0
+                self.disciplines = self.myDisciplines
+                self.tableView.reloadData()
+            }
+        }
+    }
+ 
 }
