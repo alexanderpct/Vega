@@ -20,8 +20,8 @@ protocol VegaNetworkProtocol {
     func fetchHistory(completion: @escaping (AllHistories?) -> Void)
     func fetchUpdates(completion: @escaping (AllUpdates?) -> Void)
     func fetchSubscribedDisciplines(completion: @escaping (SubscribedDisciplinesDTO?) -> Void)
-    func fetchDocuments(keywords: [String], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
-    func fetchDocuments(keywords: [String], users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
+    func fetchDocuments(searchQuery: SearchQuery, batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void)
+
     func authorizationAs(completion: @escaping (String) -> Void)
     func fetchInitialForm(searchText: String, completion: @escaping (InitialForms?) -> Void)
 }
@@ -53,7 +53,7 @@ final class NetworkService: VegaNetworkProtocol {
         URLSession.shared.dataTask(with: request) { (data, response, error) in
 //            print(response)
             if let error = error {
-                print(error)
+                completion("not ok")
                 return
             }
             guard let data = data else { return }
@@ -138,14 +138,6 @@ final class NetworkService: VegaNetworkProtocol {
         genericFetchFunction(url: urlString, completion: completion)
     }
     
-    func fetchDocuments(keywords: [String], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
-        return fetchDocuments(keywords: keywords, authors: [], users: [], themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
-    }
-    
-    func fetchDocuments(keywords: [String], users: [Int], batchStart: String, batchSize: String, completion: @escaping (DocumentsResult) -> Void) {
-        return fetchDocuments(keywords: keywords, authors: [], users: users, themes: [], batchStart: batchStart, batchSize: batchSize, completion: completion)
-    }
-    
     func fetchInitialForm(searchText: String, completion: @escaping (InitialForms?) -> Void){
 //        print(searchText)
         let encodedText = searchText.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
@@ -196,21 +188,18 @@ final class NetworkService: VegaNetworkProtocol {
     
     
     
-    func fetchDocuments(keywords: [String],
-                        authors: [String] = [],
-                        users: [Int] = [],
-                        themes: [String] = [],
+    func fetchDocuments(searchQuery: SearchQuery,
                         batchStart: String,
                         batchSize: String,
                         completion: @escaping (DocumentsResult) -> Void) {
         let urlString = "\(baseURL)/search"
         guard let url = URL(string: urlString) else { return }
         
-        let json: [String: Any] = ["keywords" : keywords,
-                                   "disciplines" : [],
-                                   "themes" : themes,
-                                   "doctypes" : [],
-                                   "users" : users,
+        let json: [String: Any] = ["keywords" : searchQuery.keywords,
+                                   "disciplines" : searchQuery.disciplinesIDs,
+                                   "themes" : searchQuery.themesIDs,
+                                   "doctypes" : searchQuery.docTypesIDs,
+                                   "users" : searchQuery.usersIDs,
                                    "upload-time-cond" : 0,
                                    "upload-time-param" : "",
                                    "authors" : [],

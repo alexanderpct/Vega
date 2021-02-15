@@ -52,16 +52,36 @@ class AdvancedSearchTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(title: String, selectedFilters: String, section: Int, row: Int){
+    func configure(title: String, searchQuery: SearchQuery, section: Int, row: Int){
         self.title.text = title
         self.selectedFilters.text = "Не выбрано"
         self.selectedFilters.textColor = .lightGray
         if section == 0 && row == 0 {
+            let selectedFilters = searchQuery.usersTitles.joined(separator: ", ")
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
             
+        } else if section == 0 && row == 1 {
+            let selectedFilters = searchQuery.docTypesTitles.joined(separator: ", ")
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
+            
+        } else if section == 0 && row == 2 {
+            let selectedFilters = searchQuery.disciplinesTitles.joined(separator: ", ")
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
+        } else if section == 0 && row == 3 {
+            let selectedFilters = searchQuery.themesTitles.joined(separator: ", ")
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
         }
 
     }

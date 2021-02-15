@@ -9,12 +9,14 @@
 import UIKit
 
 protocol RefreshDocumentsListDelegate: AnyObject {
-    func refreshDocuments(selectedUserIDs: [Int], options: [String])
+    func refreshDocuments(searchQuery: SearchQuery)
+    func searchTextUpdate()
+    
 }
 
 enum PickType {
     case users
-    case documents
+    case docTypes
     case disciplines
     case themes
     case none
@@ -22,8 +24,7 @@ enum PickType {
 
 class AdvancedSearchViewController: UITableViewController {
     
-    var selectedUserIDs = [Int]()
-    var options: [String] = []
+    var searchQuery = SearchQuery()
     weak var refreshDocumentsDelegate: RefreshDocumentsListDelegate?
     
     private let cellId = "cellId"
@@ -39,9 +40,9 @@ class AdvancedSearchViewController: UITableViewController {
     
     
     
-    convenience init(networkService: NetworkService, style: UITableView.Style, options: [String]) {
+    convenience init(networkService: NetworkService, style: UITableView.Style, searchQuery: SearchQuery) {
         self.init(networkService: networkService, style: style)
-        self.options = options
+        self.searchQuery = searchQuery
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -102,7 +103,7 @@ extension AdvancedSearchViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! AdvancedSearchTableViewCell
-        cell.configure(title: titles[indexPath.section][indexPath.row], selectedFilters: options.joined(separator: ", "), section: indexPath.section, row: indexPath.row)
+        cell.configure(title: titles[indexPath.section][indexPath.row], searchQuery: searchQuery, section: indexPath.section, row: indexPath.row)
         return cell
     }
 
@@ -110,15 +111,34 @@ extension AdvancedSearchViewController {
         
         var pickType: PickType = .none
         if indexPath.section == 0 {
-        switch indexPath.row {
+            switch indexPath.row {
             case 0: pickType = .users
-            case 1: pickType = .documents
+            case 1: pickType = .docTypes
             case 2: pickType = .disciplines
             case 3: pickType = .themes
             default: pickType = .none
+            }
         }
+        
+        var pickedValues: [String] = []
+        switch pickType {
+        case .users: pickedValues = searchQuery.usersTitles
+        case .docTypes: pickedValues = searchQuery.docTypesTitles
+        case .disciplines: pickedValues = searchQuery.disciplinesTitles
+        case .themes: pickedValues = searchQuery.themesTitles
+        case .none: pickedValues = []
         }
-        let controller = GenericCategorySearchTableViewController(networkService: networkService, type: pickType, pickedValues: options)
+        
+        var pickedIDs: [Int] = []
+        switch pickType {
+        case .users: pickedIDs = searchQuery.usersIDs
+        case .docTypes: pickedIDs = searchQuery.docTypesIDs
+        case .disciplines: pickedIDs = searchQuery.disciplinesIDs
+        case .themes: pickedIDs = searchQuery.themesIDs
+        case .none: pickedIDs = []
+        }
+        
+        let controller = GenericCategorySearchTableViewController(networkService: networkService, type: pickType, pickedValues: pickedValues, pickedIDs: pickedIDs)
         let navigationController = UINavigationController(rootViewController: controller)
         
         controller.optionsDelegate = self
@@ -130,11 +150,13 @@ extension AdvancedSearchViewController {
 extension AdvancedSearchViewController {
     
     @objc private func handleBackButtonTapped() {
+        refreshDocumentsDelegate?.searchTextUpdate()
         dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleSearchButtonTapped() {
-        refreshDocumentsDelegate?.refreshDocuments(selectedUserIDs: selectedUserIDs, options: options)
+        refreshDocumentsDelegate?.searchTextUpdate()
+        refreshDocumentsDelegate?.refreshDocuments(searchQuery: searchQuery)
         
         dismiss(animated: true, completion: nil)
     }
@@ -152,20 +174,24 @@ extension AdvancedSearchViewController: UITextFieldDelegate {
 }
 
 extension AdvancedSearchViewController: PickOptionsDelegate {
-    func didPick(options: [String], with type: PickType?) {
+    func didPick(options: [String], pickedIDs: [Int], with type: PickType?) {
 
         if type == PickType.themes {
-            networkService.fetchDocuments(keywords: ["ЯЗЫК"], themes: options, batchStart: "1", batchSize: "20") { (documents) in
-            }
+            self.searchQuery.themesIDs = pickedIDs
+            self.searchQuery.themesTitles = options
         }
 
         else if type == PickType.users {
-            self.options = options
-            selectedUserIDs = []
-            if options.contains("admin"){selectedUserIDs.append(1)}
-            if options.contains("testprep"){selectedUserIDs.append(2)}
-            if options.contains("teststud"){selectedUserIDs.append(3)}
+            self.searchQuery.usersIDs = pickedIDs
+            self.searchQuery.usersTitles = options
 
+        } else if type == PickType.docTypes {
+            self.searchQuery.docTypesIDs = pickedIDs
+            self.searchQuery.docTypesTitles = options
+            
+        } else if type == PickType.disciplines {
+            self.searchQuery.disciplinesIDs = pickedIDs
+            self.searchQuery.disciplinesTitles = options
         }
         self.tableView.reloadData()
 

@@ -46,7 +46,7 @@ class DocumentsListViewController: UIViewController {
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 25
         button.setTitle("Обновить", for: .normal)
-        button.addTarget(self, action:#selector(buttonClicked), for: .touchUpInside)
+        button.addTarget(self, action:#selector(refreshButtonClicked), for: .touchUpInside)
         return button
     }()
     
@@ -57,10 +57,12 @@ class DocumentsListViewController: UIViewController {
     private let networkService: VegaNetworkProtocol
     private var documents: [Document] = []
     private var users: [Int] = []
-    private var options: [String] = []
     private var isLoading: Bool = false
     private var totalCount: String = "0"
     
+    var searchQuery = SearchQuery()
+    
+    var searchText = ""
     var keywords = [String]()
     var searchTextPartsArrayWithoutSpaces = [String]()
     var initialFormsDataArray = [[String]]()
@@ -79,9 +81,10 @@ class DocumentsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchQuery.keywords = ["ЯЗЫК"] // пока АВ не починит тип у reqRel в API
         networkService.authorizationAs { (code) in
             DispatchQueue.main.async{
-                self.getAllDocuments()
+                self.getDocuments()
             }
         }
 
@@ -148,43 +151,15 @@ class DocumentsListViewController: UIViewController {
         self.view.addSubview(refreshButton)
         
     }
-
     
-    private func getAllDocuments() {
+    private func getDocuments(){
+      print(searchQuery)
         
-        networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: users, batchStart: "1", batchSize: "20") { (result) in
+        networkService.fetchDocuments(searchQuery: searchQuery, batchStart: "1", batchSize: "20") { (result) in
             switch result {
             case .success(let documents):
                 self.totalCount =  documents.totalCount
-                self.documents = documents.documents.compactMap { Document(from: $0) }
-                DispatchQueue.main.async {
-                    
-                    for view in self.view.subviews {
-                        view.removeFromSuperview()
-                    }
-                    
-                    self.setupSearchBar()
-                    self.setupTableView()
-                    self.navigationItem.title = "Документов: \(self.totalCount)"
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    print("🥳😎❤️\(error)")
-                    self.setupNetworkErrorLabels()
-                }
-            }
-        }
-    }
-    
-    private func getDocuments(keywords: [String]){
-        print("🍑✅\(keywords)")
-        
-        networkService.fetchDocuments(keywords: keywords, users: users, batchStart: "1", batchSize: "20") { (result) in
-            switch result {
-            case .success(let documents):
-                self.totalCount =  documents.totalCount
-                self.documents = documents.documents.compactMap { Document(from: $0) }
+                self.documents = documents.documents?.compactMap { Document(from: $0) } ?? []
                 DispatchQueue.main.async {
                     
                     for view in self.view.subviews {
@@ -206,8 +181,78 @@ class DocumentsListViewController: UIViewController {
 
     }
     
-    @objc func buttonClicked(sender : UIButton) {
-        getAllDocuments()
+    private func parseKeywords() {
+        
+        
+        keywords = []
+        initialFormsDataArray = []
+        
+        searchText = searchController.searchBar.text ?? ""
+        
+
+        let searchTextPartsArray = searchController.searchBar.text!.split(separator: ",")
+                    searchTextPartsArrayWithoutSpaces = []
+                    for part in searchTextPartsArray{
+                        if part.first == " "{
+                            var temp = part
+                            temp.removeFirst()
+                            searchTextPartsArrayWithoutSpaces.append(String(temp))
+                        } else {
+                            searchTextPartsArrayWithoutSpaces.append(String(part))
+                        }
+                    }
+//                    print("SearchTextPartsArrayWithoutSpaces: \(searchTextPartsArrayWithoutSpaces)")
+        
+                    let myGroup = DispatchGroup()
+        
+                    for part in searchTextPartsArrayWithoutSpaces{
+                        
+                        var temp = [String]() //for IFViewController
+                        temp.append(part)
+        
+                        var normForms = [String]()
+        
+                        myGroup.enter()
+        
+                        self.networkService.fetchInitialForm(searchText: part) { result in
+        
+                            guard let result = result else { return }
+                            if result.shingles3Sum != "0"{
+                                for shingle in result.shingles3{
+                                    normForms.append(shingle.norm)
+                                    temp.append(shingle.norm)
+                                }
+                            } else if result.shingles2Sum != "0"{
+                                normForms.append(result.shingles2.first!.norm)
+                                temp.append(result.shingles2.first!.norm)
+                            } else if result.terms.first != nil  {
+                                normForms.append(result.terms.first!.norm)
+                                temp.append(result.terms.first!.norm)
+                            }
+//                            print("1-stNormforms \(normForms)")
+                            self.initialFormsDataArray.append(temp)
+                            self.keywords += normForms
+        
+                            myGroup.leave()
+        
+                        }
+        
+        
+        
+                    }
+        
+                    myGroup.notify(queue: .main) {
+//                        print("Keywords: \(self.keywords)")
+                        self.searchQuery.keywords = self.keywords
+                        self.getDocuments()
+                    }
+        
+
+        
+    }
+    
+    @objc func refreshButtonClicked(sender : UIButton) {
+        getDocuments()
     }
 
 
@@ -277,10 +322,10 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
             if !self.isLoading {
                 self.isLoading = true
                 
-                networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: users, batchStart: String(documents.count + 1), batchSize: "20") { (result) in
+                networkService.fetchDocuments(searchQuery: searchQuery, batchStart: String(documents.count + 1), batchSize: "20") { (result) in
                     switch result {
                     case .success(let documents):
-                        self.documents += documents.documents.compactMap { Document(from: $0) }
+                        self.documents += documents.documents?.compactMap { Document(from: $0) } ?? []
                         DispatchQueue.main.async {
                             self.isLoading = false
                             self.tableView.reloadData()
@@ -304,77 +349,17 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
 extension DocumentsListViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, options: options)
+        
+        let controller = AdvancedSearchViewController(networkService: networkService as! NetworkService, style: .grouped, searchQuery: searchQuery)
         controller.refreshDocumentsDelegate = self
         let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
+
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
-        
-        
-        keywords = []
-        initialFormsDataArray = []
-        
-
-        let searchTextPartsArray = searchBar.text!.split(separator: ",")
-                    searchTextPartsArrayWithoutSpaces = []
-                    for part in searchTextPartsArray{
-                        if part.first == " "{
-                            var temp = part
-                            temp.removeFirst()
-                            searchTextPartsArrayWithoutSpaces.append(String(temp))
-                        } else {
-                            searchTextPartsArrayWithoutSpaces.append(String(part))
-                        }
-                    }
-//                    print("SearchTextPartsArrayWithoutSpaces: \(searchTextPartsArrayWithoutSpaces)")
-        
-                    let myGroup = DispatchGroup()
-        
-                    for part in searchTextPartsArrayWithoutSpaces{
-                        
-                        var temp = [String]() //for IFViewController
-                        temp.append(part)
-        
-                        var normForms = [String]()
-        
-                        myGroup.enter()
-        
-                        self.networkService.fetchInitialForm(searchText: part) { result in
-        
-                            guard let result = result else { return }
-                            if result.shingles3Sum != "0"{
-                                for shingle in result.shingles3{
-                                    normForms.append(shingle.norm)
-                                    temp.append(shingle.norm)
-                                }
-                            } else if result.shingles2Sum != "0"{
-                                normForms.append(result.shingles2.first!.norm)
-                                temp.append(result.shingles2.first!.norm)
-                            } else if result.terms.first != nil  {
-                                normForms.append(result.terms.first!.norm)
-                                temp.append(result.terms.first!.norm)
-                            }
-//                            print("1-stNormforms \(normForms)")
-                            self.initialFormsDataArray.append(temp)
-                            self.keywords += normForms
-        
-                            myGroup.leave()
-        
-                        }
-        
-        
-        
-                    }
-        
-                    myGroup.notify(queue: .main) {
-                        print("Keywords: \(self.keywords)")
-                        self.getDocuments(keywords: self.keywords)
-                    }
-        
-
-        
+        parseKeywords()
     }
         
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {
@@ -401,22 +386,14 @@ extension DocumentsListViewController {
 }
 
 extension DocumentsListViewController: RefreshDocumentsListDelegate{
-    func refreshDocuments(selectedUserIDs: [Int], options: [String]) {
-        self.options = options
-        self.users = selectedUserIDs
-        self.networkService.fetchDocuments(keywords: ["ЯЗЫК"], users: selectedUserIDs, batchStart: "1", batchSize: "20", completion: { (result) in
-            switch result {
-            case .success(let documents):
-                self.totalCount =  documents.totalCount
-                self.documents = documents.documents.compactMap { Document(from: $0) }
-                DispatchQueue.main.async {
-                    self.navigationItem.title = "Документов: \(self.totalCount)"
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        })
+    func refreshDocuments(searchQuery: SearchQuery) {
+        self.searchQuery = searchQuery
+        self.getDocuments()
+
+    }
+    
+    func searchTextUpdate() {
+        searchController.searchBar.text = self.searchText
     }
 
     

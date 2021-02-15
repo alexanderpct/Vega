@@ -10,6 +10,7 @@
 		DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */; };
 		DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */; };
 		DF5BD553258CAC23007F25D4 /* InitialForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5BD552258CAC23007F25D4 /* InitialForms.swift */; };
+		DF6A7E9925D40BA7002B152E /* SearchQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A7E9825D40BA7002B152E /* SearchQuery.swift */; };
 		DFFF07AA2598FF090096762E /* InitialFormsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFF07A92598FF090096762E /* InitialFormsViewController.swift */; };
 		DFFF07B5259910920096762E /* InitialFormsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFF07B4259910920096762E /* InitialFormsTableViewCell.swift */; };
 		E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372557253DB51400E06E2A /* AppDelegate.swift */; };
@@ -67,6 +68,7 @@
 		DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
 		DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTableViewCell.swift; sourceTree = "<group>"; };
 		DF5BD552258CAC23007F25D4 /* InitialForms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialForms.swift; sourceTree = "<group>"; };
+		DF6A7E9825D40BA7002B152E /* SearchQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchQuery.swift; path = "Vega/Presentation Layer/Search/SearchQuery.swift"; sourceTree = SOURCE_ROOT; };
 		DFFF07A92598FF090096762E /* InitialFormsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFormsViewController.swift; sourceTree = "<group>"; };
 		DFFF07B4259910920096762E /* InitialFormsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFormsTableViewCell.swift; sourceTree = "<group>"; };
 		E5372554253DB51400E06E2A /* Vega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vega.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -261,6 +263,7 @@
 		E53725CC253DB81A00E06E2A /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				DF6A7E9825D40BA7002B152E /* SearchQuery.swift */,
 				E53725CD253DB81A00E06E2A /* Documents */,
 				DFFF07A82598FEB40096762E /* InitialForms */,
 				E53725D2253DB81A00E06E2A /* Filter */,
@@ -470,6 +473,7 @@
 				E53725F4253DB81E00E06E2A /* DocumentTableViewCell.swift in Sources */,
 				DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */,
 				E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */,
+				DF6A7E9925D40BA7002B152E /* SearchQuery.swift in Sources */,
 				E53725F3253DB81E00E06E2A /* DisciplinesTableViewCell.swift in Sources */,
 				E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */,
 				E53725AA253DB79500E06E2A /* DocumentDTO.swift in Sources */,

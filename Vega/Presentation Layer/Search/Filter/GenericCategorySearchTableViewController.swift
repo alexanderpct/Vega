@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PickOptionsDelegate: AnyObject {
-    func didPick(options: [String], with type: PickType?)
+    func didPick(options: [String], pickedIDs: [Int], with type: PickType?)
 }
 
 class GenericCategorySearchTableViewController: UITableViewController {
@@ -22,16 +22,19 @@ class GenericCategorySearchTableViewController: UITableViewController {
 
     private var values: [String] = []
     private var pickedValues: [String] = []
+    private var IDs: [Int] = []
+    private var pickedIDs: [Int] = []
     private var pickType: PickType
     
     private let cellId = "cellId"
     
     private let spinner = UIActivityIndicatorView(style: .medium)
     
-    init(networkService: NetworkService, type: PickType, pickedValues: [String]) {
+    init(networkService: NetworkService, type: PickType, pickedValues: [String], pickedIDs: [Int]) {
         self.networkService = networkService
         self.pickType = type
         self.pickedValues = pickedValues
+        self.pickedIDs = pickedIDs
         super.init(style: .plain)
     }
     
@@ -87,7 +90,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
             case .users:
                 fetchUsers()
                 title = "Пользователи"
-            case .documents:
+            case .docTypes:
                 fetchDocTypes()
                 title = "Документы"
             case .disciplines:
@@ -113,6 +116,7 @@ extension GenericCategorySearchTableViewController {
     private func fetchDocTypes() {
         networkService.fetchDocTypes { (response) in
             self.values = response?.compactMap { $0.title } ?? []
+            self.IDs = response?.compactMap { Int($0.id) } ?? []
             self.reloadTableView()
         }
     }
@@ -120,6 +124,7 @@ extension GenericCategorySearchTableViewController {
     private func fetchUsers() {
         networkService.fetchUsers { (response) in
             self.values = response?.compactMap { $0.name } ?? []
+            self.IDs = response?.compactMap { Int($0.id) } ?? []
             self.reloadTableView()
         }
     }
@@ -127,6 +132,7 @@ extension GenericCategorySearchTableViewController {
     private func fetchDisciplines() {
         networkService.fetchDisciplines { (response) in
             self.values = response?.compactMap { $0.title } ?? []
+            self.IDs = response?.compactMap { Int($0.id)! } ?? []
             self.reloadTableView()
         }
     }
@@ -134,6 +140,7 @@ extension GenericCategorySearchTableViewController {
     private func fetchThemes() {
         networkService.fetchThemes { (response) in
             self.values = response?.compactMap { $0.title } ?? []
+            self.IDs = response?.compactMap { Int($0.id) } ?? []
             self.reloadTableView()
         }
     }
@@ -162,12 +169,15 @@ extension GenericCategorySearchTableViewController {
         }
         
         let value = values[indexPath.row]
+        let id = IDs[indexPath.row]
         if pickedValues.contains(value) {
             if let index = pickedValues.firstIndex(of: value) {
                 pickedValues.remove(at: index)
+                pickedIDs.remove(at: index)
             }
         } else {
             pickedValues.append(value)
+            pickedIDs.append(id)
         }
     }
 
@@ -179,7 +189,7 @@ extension GenericCategorySearchTableViewController {
     }
     
     @objc private func handleConfirmButtonTapped() {
-        optionsDelegate?.didPick(options: pickedValues, with: pickType)
+        optionsDelegate?.didPick(options: pickedValues, pickedIDs: pickedIDs, with: pickType)
         dismiss(animated: true, completion: nil)
     }
 }

@@ -10,8 +10,8 @@ import Foundation
 
 struct AllDocumentsDTO: Decodable {
     let totalCount, requestID, batchStart, batchSize: String
-        let documents: [DocumentDTO]
-        let resultKeywords: [String]
+        let documents: [DocumentDTO]?
+        let resultKeywords: [String]?
 
     enum CodingKeys: String, CodingKey {
         case totalCount = "total-count"
@@ -27,10 +27,15 @@ struct AllDocumentsDTO: Decodable {
 
         batchSize = try container.decode(String.self, forKey: .batchSize)
         batchStart = try container.decode(String.self, forKey: .batchStart)
-        documents = try container.decode([DocumentDTO].self, forKey: .documents)
         resultKeywords = try container.decode([String].self, forKey: .resultKeywords)
         totalCount = try container.decode(String.self, forKey: .totalCount)
         requestID = try container.decode(String.self, forKey: .requestID)
+        
+        if container.contains(.documents){ //когда он не нашел документы, result-keywords отсутствует
+            documents = try container.decode([DocumentDTO].self, forKey: .documents)
+        } else {
+            self.documents = nil
+        }
     }
 
 

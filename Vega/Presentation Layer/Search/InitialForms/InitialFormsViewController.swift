@@ -75,15 +75,18 @@ class InitialFormsViewController: UIViewController, UITableViewDelegate, UITable
         if search.count == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! InitialFormsTableViewCell
             cell.textLabel!.text = "Поисковой запрос не задан"
+            cell.isUserInteractionEnabled = false
             cell.textLabel!.textAlignment = .center
             return cell
         } else {
             if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! InitialFormsTableViewCell
+                cell.isUserInteractionEnabled = false
             cell.configure(search: search.joined(separator:", "), initialForms: initialFroms.joined(separator:", "))
                 return cell
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! InitialFormsTableViewCell
+                cell.isUserInteractionEnabled = false
                 let temp = Array(initialFormsDataArray[indexPath.row].dropFirst(1))
                 cell.configure(search: initialFormsDataArray[indexPath.row][0], initialForms: temp.joined(separator:", "))
                 return cell
