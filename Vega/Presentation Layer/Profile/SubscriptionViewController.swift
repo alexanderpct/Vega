@@ -16,7 +16,7 @@ class SubscriptionsViewController: UIViewController {
     private var myDisciplines: [Discipline] = []
     private var disciplines: [Discipline] = []
     private var pickedDisciplines: [Discipline] = []
-    private let networkService: NetworkService
+    private let networkService: VegaNetworkProtocol
     
     lazy var checked = [Bool].init(repeating: false, count: allDisciplines.count)
     
@@ -28,7 +28,7 @@ class SubscriptionsViewController: UIViewController {
         return control
     }()
     
-    init(networkService: NetworkService) {
+    init(networkService: VegaNetworkProtocol) {
         self.networkService = networkService
         super.init(nibName: nil, bundle: nil)
     }

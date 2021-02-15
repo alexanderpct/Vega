@@ -86,7 +86,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            navigationController?.pushViewController(SubscriptionsViewController(networkService: networkService as! NetworkService), animated: true)
+            navigationController?.pushViewController(SubscriptionsViewController(networkService: networkService), animated: true)
         case 1:
             navigationController?.pushViewController(SettingsViewController(), animated: true)
         case 2:
