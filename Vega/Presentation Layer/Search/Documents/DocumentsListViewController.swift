@@ -153,7 +153,8 @@ class DocumentsListViewController: UIViewController {
     }
     
     private func getDocuments(){
-      print(searchQuery)
+        print(searchQuery)
+        navigationItem.title = "Загрузка..."
         
         networkService.fetchDocuments(searchQuery: searchQuery, batchStart: "1", batchSize: "20") { (result) in
             switch result {
