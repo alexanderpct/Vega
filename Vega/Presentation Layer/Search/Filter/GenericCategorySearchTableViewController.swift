@@ -14,7 +14,7 @@ protocol PickOptionsDelegate: AnyObject {
 
 class GenericCategorySearchTableViewController: UITableViewController {
 
-    lazy var checked = [Bool].init(repeating: false, count: values.count)
+//    lazy var checked = [Bool].init(repeating: false, count: values.count)
     
     weak var optionsDelegate: PickOptionsDelegate?
     
@@ -69,6 +69,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        cell.accessoryType = .none
         cell.textLabel?.text = values[indexPath.row]
         cell.textLabel?.numberOfLines = 0
         cell.sizeToFit()
@@ -161,10 +162,10 @@ extension GenericCategorySearchTableViewController {
         if let cell = tableView.cellForRow(at: indexPath) {
             if cell.accessoryType == .checkmark {
                 cell.accessoryType = .none
-                checked[indexPath.row] = false
+           //     checked[indexPath.row] = false
             } else {
                 cell.accessoryType = .checkmark
-                checked[indexPath.row] = true
+           //     checked[indexPath.row] = true
             }
         }
         
