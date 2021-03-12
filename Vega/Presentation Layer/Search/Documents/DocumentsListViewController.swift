@@ -311,11 +311,9 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
         navigationController?.pushViewController(controller, animated: true)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        
-        if (offsetY > contentHeight - scrollView.frame.height * 4) && !isLoading {
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == documents.count && !isLoading {
             loadMoreData()
         }
     }
