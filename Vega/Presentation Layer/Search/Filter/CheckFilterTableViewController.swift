@@ -12,7 +12,7 @@ protocol PickOptionsDelegate: AnyObject {
     func didPick(options: [String], pickedIDs: [Int], with type: PickType?)
 }
 
-class GenericCategorySearchTableViewController: UITableViewController {
+class CheckFilterTableViewController: UITableViewController {
 
 //    lazy var checked = [Bool].init(repeating: false, count: values.count)
     
@@ -112,7 +112,7 @@ class GenericCategorySearchTableViewController: UITableViewController {
 
 }
 
-extension GenericCategorySearchTableViewController {
+extension CheckFilterTableViewController {
 
     private func fetchDocTypes() {
         networkService.fetchDocTypes { (response) in
@@ -156,7 +156,7 @@ extension GenericCategorySearchTableViewController {
     
 }
 
-extension GenericCategorySearchTableViewController {
+extension CheckFilterTableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
@@ -184,7 +184,7 @@ extension GenericCategorySearchTableViewController {
 
 }
 
-extension GenericCategorySearchTableViewController {
+extension CheckFilterTableViewController {
     @objc private func handleBackButtonTapped() {
         dismiss(animated: true, completion: nil)
     }

@@ -200,17 +200,17 @@ final class NetworkService: VegaNetworkProtocol {
                                    "themes" : searchQuery.themesIDs,
                                    "doctypes" : searchQuery.docTypesIDs,
                                    "users" : searchQuery.usersIDs,
-                                   "upload-time-cond" : 0,
-                                   "upload-time-param" : "",
-                                   "authors" : [],
-                                   "title" : "",
-                                   "publication-date-cond" : 0,
-                                   "publication-date-param" : "",
-                                   "comments" : "",
-                                   "rating-cond" : 0,
-                                   "rating-param" : 0,
+                                   "upload-time-cond" : searchQuery.uploadTimeCond,
+                                   "upload-time-param" : searchQuery.uploadTimeParam,
+                                   "authors" : searchQuery.authors,
+                                   "title" : searchQuery.title,
+                                   "publication-date-cond" : searchQuery.publicationDateCond,
+                                   "publication-date-param" : searchQuery.publicationDateParam,
+                                   "comments" : searchQuery.comments,
+                                   "rating-cond" : searchQuery.ratingCond,
+                                   "rating-param" : searchQuery.ratingParam,
                                    "sort-order" : 1,
-                                   "code" : ""
+                                   "code" : searchQuery.code
         ]
         
         let jsonData = try? JSONSerialization.data(withJSONObject: json)

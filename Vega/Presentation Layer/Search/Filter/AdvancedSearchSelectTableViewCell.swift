@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AdvancedSearchTableViewCell: UITableViewCell {
+class AdvancedSearchSelectTableViewCell: UITableViewCell {
     
     private let title: UILabel = {
         let label = UILabel()
@@ -56,35 +56,72 @@ class AdvancedSearchTableViewCell: UITableViewCell {
         self.title.text = title
         self.selectedFilters.text = "Не выбрано"
         self.selectedFilters.textColor = .lightGray
-        if section == 0 && row == 0 {
+        if row == 7 {
             let selectedFilters = searchQuery.usersTitles.joined(separator: ", ")
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
             
-        } else if section == 0 && row == 1 {
+        } else if row == 4 {
             let selectedFilters = searchQuery.docTypesTitles.joined(separator: ", ")
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
             
-        } else if section == 0 && row == 2 {
+        } else if row == 6 {
             let selectedFilters = searchQuery.disciplinesTitles.joined(separator: ", ")
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
-        } else if section == 0 && row == 3 {
+        } else if row == 5 {
             let selectedFilters = searchQuery.themesTitles.joined(separator: ", ")
             if selectedFilters != "" {
                 self.selectedFilters.text = selectedFilters
                 self.selectedFilters.textColor = .darkGray
             }
+        } else if row == 3 {
+            let conditionTimeTitles = ["не выбрано", "до", "после", "равно"]
+            
+            let selectedFilters = conditionTimeTitles[searchQuery.publicationDateCond] + " " + searchQuery.publicationDateParam
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
+            
+            if conditionTimeTitles[searchQuery.publicationDateCond] == "не выбрано" {
+                self.selectedFilters.textColor = .lightGray
+                self.selectedFilters.text = conditionTimeTitles[searchQuery.publicationDateCond]
+            }
+            
+        } else if row == 8 {
+            let conditionTimeTitles = ["не выбрано", "до", "после", "равно"]
+            
+            let selectedFilters = conditionTimeTitles[searchQuery.uploadTimeCond] + " " + searchQuery.uploadTimeParam
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
+            
+            if conditionTimeTitles[searchQuery.uploadTimeCond] == "не выбрано" {
+                self.selectedFilters.textColor = .lightGray
+                self.selectedFilters.text = conditionTimeTitles[searchQuery.uploadTimeCond]
+            }
+        } else if row == 10 {
+            let conditionRatingTitles = ["не выбрано", "меньше", "больше", "равно"]
+            
+            let selectedFilters = conditionRatingTitles[searchQuery.ratingCond] + " " + searchQuery.ratingParam
+            if selectedFilters != "" {
+                self.selectedFilters.text = selectedFilters
+                self.selectedFilters.textColor = .darkGray
+            }
+            
+            if conditionRatingTitles[searchQuery.ratingCond] == "не выбрано" {
+                self.selectedFilters.textColor = .lightGray
+                self.selectedFilters.text = conditionRatingTitles[searchQuery.ratingCond]
+            }
         }
-
     }
-
-
 }

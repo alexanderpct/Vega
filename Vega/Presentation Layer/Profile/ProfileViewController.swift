@@ -14,7 +14,7 @@ class ProfileViewController: UIViewController {
     
     private let cellId = "cellId"
     
-    private let titles = ["Подписки", "Настройки", "Загрузить", "История", "Выйти"]
+    private let titles = ["Подписки", "Настройки", "Загрузить", "История", "Выйти", "Версия приложения: 1.0"]
     
     private let networkService: VegaNetworkProtocol
     
@@ -71,10 +71,16 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
             case 2: cell.imageView?.image = UIImage(systemName: "icloud.and.arrow.up")
             case 3: cell.imageView?.image = UIImage(systemName: "folder")
             case 4: cell.imageView?.image = UIImage(systemName: "multiply")
+            case 5: cell.imageView?.image = UIImage(systemName: "info.circle")
             default: break
         }
         
         cell.accessoryType = .disclosureIndicator
+        
+        if titles [indexPath.row].contains("Версия приложения") {
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
+        }
         return cell
     }
     

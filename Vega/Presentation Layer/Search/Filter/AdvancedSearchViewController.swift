@@ -10,15 +10,23 @@ import UIKit
 
 protocol RefreshDocumentsListDelegate: AnyObject {
     func refreshDocuments(searchQuery: SearchQuery)
-    func searchTextUpdate()
-    
+    func searchTextUpdate(searchQuery: SearchQuery)
 }
 
+
 enum PickType {
+    // CheckFilterVC
     case users
     case docTypes
     case disciplines
     case themes
+    case none
+}
+
+enum CheckType {
+    case publicationDate
+    case uploadTime
+    case rating
     case none
 }
 
@@ -27,10 +35,12 @@ class AdvancedSearchViewController: UITableViewController {
     var searchQuery = SearchQuery()
     weak var refreshDocumentsDelegate: RefreshDocumentsListDelegate?
     
-    private let cellId = "cellId"
+    private let cellId1 = "cellId1"
+    private let cellId2 = "cellId2"
+    private let cellId3 = "cellId3"
     private let networkService: NetworkService
     
-    let titles = [["Выбрать пользователей", "Выбрать типы документов", "Выбрать дисциплины", "Выбрать темы"], ["Дата публикации документа", "Рейтинг документа", "Дата загрузки документа"]]
+    let titles = ["Ключевые слова:", "Автор:", "Заглавие:","Дата издания", "Тип документа",  "Тема", "Дисциплина", "Пользователь", "Дата добавления", "Комментарий:", "Рейтинг", "Код:"]
     
     
     init(networkService: NetworkService, style: UITableView.Style) {
@@ -49,19 +59,15 @@ class AdvancedSearchViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let inputTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .red
-        return textField;
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBar()
-                
-        tableView.register(AdvancedSearchTableViewCell.self, forCellReuseIdentifier: cellId)
+        
+        tableView.keyboardDismissMode = .onDrag
+         
+        tableView.register(AdvancedSearchTypeTableViewCell.self, forCellReuseIdentifier: cellId1)
+        tableView.register(AdvancedSearchSelectTableViewCell.self, forCellReuseIdentifier: cellId2)
         
         tableView.rowHeight = 80
         
@@ -81,46 +87,64 @@ class AdvancedSearchViewController: UITableViewController {
 extension AdvancedSearchViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
             case 0: return "Основные"
-            case 1: return " "
         default: return " "
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-            case 0: return 4
-            case 1: return 3
-        default: return 100
-        }
+        return titles.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 9 || indexPath.row == 11  {
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId1, for: indexPath) as! AdvancedSearchTypeTableViewCell
+            cell.typeOptionsDelegate = self
+            cell.configure(title: titles[indexPath.row], row: indexPath.row, searchQuery: searchQuery)
+            cell.selectionStyle = .none
+            
+            return cell
+            
+        } else if indexPath.row == 4 || indexPath.row == 5 || indexPath.row == 6 || indexPath.row == 7 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId2, for: indexPath) as! AdvancedSearchSelectTableViewCell
+            cell.configure(title: titles[indexPath.row], searchQuery: searchQuery, section: indexPath.section, row: indexPath.row)
+            return cell
+        } else { //indexpath.row == 3, 8, 10
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId2, for: indexPath) as! AdvancedSearchSelectTableViewCell
+            cell.configure(title: titles[indexPath.row], searchQuery: searchQuery, section: indexPath.section, row: indexPath.row)
+            return cell
+        }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! AdvancedSearchTableViewCell
-        cell.configure(title: titles[indexPath.section][indexPath.row], searchQuery: searchQuery, section: indexPath.section, row: indexPath.row)
-        return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        //     navigationController?.pushViewController(PickFilterViewController(), animated: true)
+        
         var pickType: PickType = .none
-        if indexPath.section == 0 {
-            switch indexPath.row {
-            case 0: pickType = .users
-            case 1: pickType = .docTypes
-            case 2: pickType = .disciplines
-            case 3: pickType = .themes
-            default: pickType = .none
-            }
+        var checkType: CheckType = .none
+        
+        switch indexPath.row {
+        //        case 0: keywords
+        //        case 1: author
+        //        case 2: title
+        case 3: checkType = .publicationDate
+        case 4: pickType = .docTypes
+        case 5: pickType = .themes
+        case 6: pickType = .disciplines
+        case 7: pickType = .users
+        case 8: checkType = .uploadTime
+        //        case 9: комментарий
+        default: pickType = .none
         }
         
         var pickedValues: [String] = []
+        
         switch pickType {
         case .users: pickedValues = searchQuery.usersTitles
         case .docTypes: pickedValues = searchQuery.docTypesTitles
@@ -138,26 +162,69 @@ extension AdvancedSearchViewController {
         case .none: pickedIDs = []
         }
         
-        let controller = GenericCategorySearchTableViewController(networkService: networkService, type: pickType, pickedValues: pickedValues, pickedIDs: pickedIDs)
-        let navigationController = UINavigationController(rootViewController: controller)
+        switch indexPath.row {
+        //        case 0: keywords
+        //        case 1: author
+        //        case 2: title
+        case 3: checkType = .publicationDate
+        case 4: pickType = .docTypes
+        case 5: pickType = .themes
+        case 6: pickType = .disciplines
+        case 7: pickType = .users
+        case 8: checkType = .uploadTime
+        //        case 9: комментарий
+        case 10: checkType = .rating
+        //        case 11: code
+        default: pickType = .none
+        }
         
-        controller.optionsDelegate = self
-        present(navigationController, animated: true, completion: {self.tableView.deselectRow(at: indexPath, animated: false)})
+        var checkedParametrs: String = ""
+        switch checkType {
+        case .publicationDate: checkedParametrs = searchQuery.publicationDateParam
+        case .rating: checkedParametrs = searchQuery.ratingParam
+        case .uploadTime: checkedParametrs = searchQuery.uploadTimeParam
+        case .none: checkedParametrs = ""
+        }
+        
+        var checkedCond: Int = 0
+        switch checkType {
+        case .publicationDate: checkedCond = searchQuery.publicationDateCond
+        case .rating: checkedCond = searchQuery.ratingCond
+        case .uploadTime: checkedCond = searchQuery.uploadTimeCond
+        case .none: checkedCond = 0
+        }
+        
+        
+        if indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2 || indexPath.row == 9 || indexPath.row == 11 {
+            
+            let cell = tableView.cellForRow(at: indexPath) as? AdvancedSearchTypeTableViewCell
+            cell?.textField.becomeFirstResponder()
+            
+        } else if indexPath.row == 4 || indexPath.row == 5 || indexPath.row == 6 || indexPath.row == 7 {
+            let controller = CheckFilterTableViewController(networkService: networkService, type: pickType, pickedValues: pickedValues, pickedIDs: pickedIDs)
+            let navigationController = UINavigationController(rootViewController: controller)
+            
+            controller.optionsDelegate = self
+            present(navigationController, animated: true, completion: {self.tableView.deselectRow(at: indexPath, animated: false)})
+            
+        } else { //indexpath.row == 3, 8, 10
+            let controller = PickFilterViewController(type: checkType, checkedParametrs: checkedParametrs, checkedCond: checkedCond)
+            controller.pickerFilterVCtoAdvansedSearchVCDelegate = self
+            let navigationController = UINavigationController(rootViewController: controller)
+            present(navigationController, animated: true, completion: {self.tableView.deselectRow(at: indexPath, animated: false)})
+        }
     }
-    
 }
 
 extension AdvancedSearchViewController {
     
     @objc private func handleBackButtonTapped() {
-        refreshDocumentsDelegate?.searchTextUpdate()
+        refreshDocumentsDelegate?.searchTextUpdate(searchQuery: searchQuery)
         dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleSearchButtonTapped() {
-        refreshDocumentsDelegate?.searchTextUpdate()
         refreshDocumentsDelegate?.refreshDocuments(searchQuery: searchQuery)
-        
         dismiss(animated: true, completion: nil)
     }
     
@@ -197,5 +264,48 @@ extension AdvancedSearchViewController: PickOptionsDelegate {
 
 
 
+    }
+}
+
+extension AdvancedSearchViewController: PickerFilterVCtoAdvansedSearchVCDelegate {
+    func transfer(checkType: CheckType, checkedParametrs: String, checkedCond: Int){
+        if checkType == .publicationDate {
+            self.searchQuery.publicationDateParam = checkedParametrs
+            self.searchQuery.publicationDateCond = checkedCond
+        } else if checkType == .uploadTime {
+            self.searchQuery.uploadTimeParam = checkedParametrs
+            self.searchQuery.uploadTimeCond = checkedCond
+        } else if checkType == .rating {
+            self.searchQuery.ratingParam = checkedParametrs
+            self.searchQuery.ratingCond = checkedCond
+        }
+        
+        self.tableView.reloadData()
+    }
+}
+
+
+extension AdvancedSearchViewController: TypeOptionsDelegate {
+    func didTyped(title: String, checkedParametrs: String) {
+        switch title {
+        case "Ключевые слова:": searchQuery.searchText = checkedParametrs
+        case "Автор:": let authors = checkedParametrs.split(separator: ",")
+            var authorsWithoutSpacesAfterComma = [String]()
+            for author in authors {
+                if author.first == " " {
+                    var temp = author
+                    temp.removeFirst()
+                    authorsWithoutSpacesAfterComma.append(String(temp))
+                } else {
+                    authorsWithoutSpacesAfterComma.append(String(author))
+                }
+            }
+            searchQuery.authors = authorsWithoutSpacesAfterComma
+        case "Заглавие:": searchQuery.title = checkedParametrs
+        case "Комментарий:": searchQuery.comments = checkedParametrs
+        case "Код:": searchQuery.code = checkedParametrs
+        default:
+            break
+        }
     }
 }

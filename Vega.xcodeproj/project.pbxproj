@@ -8,9 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */; };
-		DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */; };
+		DF1D260125E150F000E6C362 /* PickFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1D260025E150F000E6C362 /* PickFilterViewController.swift */; };
+		DF1E77A7254B4872006E4C7C /* AdvancedSearchSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E77A6254B4872006E4C7C /* AdvancedSearchSelectTableViewCell.swift */; };
+		DF4446A225DD1F910040DF68 /* AdvancedSearchTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4446A125DD1F910040DF68 /* AdvancedSearchTypeTableViewCell.swift */; };
 		DF5BD553258CAC23007F25D4 /* InitialForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5BD552258CAC23007F25D4 /* InitialForms.swift */; };
 		DF6A7E9925D40BA7002B152E /* SearchQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A7E9825D40BA7002B152E /* SearchQuery.swift */; };
+		DFF1142A25F7E48200B09CC2 /* PickTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF1142925F7E48200B09CC2 /* PickTableViewCell.swift */; };
 		DFFF07AA2598FF090096762E /* InitialFormsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFF07A92598FF090096762E /* InitialFormsViewController.swift */; };
 		DFFF07B5259910920096762E /* InitialFormsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFFF07B4259910920096762E /* InitialFormsTableViewCell.swift */; };
 		E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5372557253DB51400E06E2A /* AppDelegate.swift */; };
@@ -32,7 +35,7 @@
 		E53725E1253DB81A00E06E2A /* DocumentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D0253DB81A00E06E2A /* DocumentListTableViewCell.swift */; };
 		E53725E2253DB81A00E06E2A /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D1253DB81A00E06E2A /* DocumentViewController.swift */; };
 		E53725E3253DB81A00E06E2A /* AdvancedSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */; };
-		E53725E4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */; };
+		E53725E4253DB81A00E06E2A /* CheckFilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D4253DB81A00E06E2A /* CheckFilterTableViewController.swift */; };
 		E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D7253DB81A00E06E2A /* MainTabBarController.swift */; };
 		E53725E7253DB81A00E06E2A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725D8253DB81A00E06E2A /* LoginViewController.swift */; };
 		E53725E8253DB81A00E06E2A /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53725DA253DB81A00E06E2A /* UploadViewController.swift */; };
@@ -66,9 +69,12 @@
 
 /* Begin PBXFileReference section */
 		DF0AF609257FBAE700160C83 /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
-		DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTableViewCell.swift; sourceTree = "<group>"; };
+		DF1D260025E150F000E6C362 /* PickFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickFilterViewController.swift; sourceTree = "<group>"; };
+		DF1E77A6254B4872006E4C7C /* AdvancedSearchSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchSelectTableViewCell.swift; sourceTree = "<group>"; };
+		DF4446A125DD1F910040DF68 /* AdvancedSearchTypeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTypeTableViewCell.swift; sourceTree = "<group>"; };
 		DF5BD552258CAC23007F25D4 /* InitialForms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialForms.swift; sourceTree = "<group>"; };
 		DF6A7E9825D40BA7002B152E /* SearchQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchQuery.swift; path = "Vega/Presentation Layer/Search/SearchQuery.swift"; sourceTree = SOURCE_ROOT; };
+		DFF1142925F7E48200B09CC2 /* PickTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickTableViewCell.swift; sourceTree = "<group>"; };
 		DFFF07A92598FF090096762E /* InitialFormsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFormsViewController.swift; sourceTree = "<group>"; };
 		DFFF07B4259910920096762E /* InitialFormsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFormsTableViewCell.swift; sourceTree = "<group>"; };
 		E5372554253DB51400E06E2A /* Vega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vega.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,7 +102,7 @@
 		E53725D0253DB81A00E06E2A /* DocumentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentListTableViewCell.swift; sourceTree = "<group>"; };
 		E53725D1253DB81A00E06E2A /* DocumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentViewController.swift; sourceTree = "<group>"; };
 		E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSearchViewController.swift; sourceTree = "<group>"; };
-		E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericCategorySearchTableViewController.swift; sourceTree = "<group>"; };
+		E53725D4253DB81A00E06E2A /* CheckFilterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckFilterTableViewController.swift; sourceTree = "<group>"; };
 		E53725D7253DB81A00E06E2A /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		E53725D8253DB81A00E06E2A /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E53725DA253DB81A00E06E2A /* UploadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
@@ -286,8 +292,11 @@
 			isa = PBXGroup;
 			children = (
 				E53725D3253DB81A00E06E2A /* AdvancedSearchViewController.swift */,
-				DF1E77A6254B4872006E4C7C /* AdvancedSearchTableViewCell.swift */,
-				E53725D4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift */,
+				DF4446A125DD1F910040DF68 /* AdvancedSearchTypeTableViewCell.swift */,
+				DF1E77A6254B4872006E4C7C /* AdvancedSearchSelectTableViewCell.swift */,
+				E53725D4253DB81A00E06E2A /* CheckFilterTableViewController.swift */,
+				DF1D260025E150F000E6C362 /* PickFilterViewController.swift */,
+				DFF1142925F7E48200B09CC2 /* PickTableViewCell.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -456,8 +465,8 @@
 				E53725E8253DB81A00E06E2A /* UploadViewController.swift in Sources */,
 				E53725BB253DB7EB00E06E2A /* History.swift in Sources */,
 				E53725E9253DB81A00E06E2A /* UpdatesViewController.swift in Sources */,
-				DF1E77A7254B4872006E4C7C /* AdvancedSearchTableViewCell.swift in Sources */,
-				E53725E4253DB81A00E06E2A /* GenericCategorySearchTableViewController.swift in Sources */,
+				DF1E77A7254B4872006E4C7C /* AdvancedSearchSelectTableViewCell.swift in Sources */,
+				E53725E4253DB81A00E06E2A /* CheckFilterTableViewController.swift in Sources */,
 				E53725BA253DB7EB00E06E2A /* Document.swift in Sources */,
 				E53725B9253DB7EB00E06E2A /* Disciplines.swift in Sources */,
 				E53725BC253DB7EB00E06E2A /* Updates.swift in Sources */,
@@ -474,11 +483,14 @@
 				DF0AF60A257FBAE700160C83 /* LoadingTableViewCell.swift in Sources */,
 				E53725E6253DB81A00E06E2A /* MainTabBarController.swift in Sources */,
 				DF6A7E9925D40BA7002B152E /* SearchQuery.swift in Sources */,
+				DF4446A225DD1F910040DF68 /* AdvancedSearchTypeTableViewCell.swift in Sources */,
 				E53725F3253DB81E00E06E2A /* DisciplinesTableViewCell.swift in Sources */,
 				E5372558253DB51400E06E2A /* AppDelegate.swift in Sources */,
+				DF1D260125E150F000E6C362 /* PickFilterViewController.swift in Sources */,
 				E53725AA253DB79500E06E2A /* DocumentDTO.swift in Sources */,
 				E53725EC253DB81A00E06E2A /* SubscriptionViewController.swift in Sources */,
 				E53725FC253DB89500E06E2A /* NetworkManager.swift in Sources */,
+				DFF1142A25F7E48200B09CC2 /* PickTableViewCell.swift in Sources */,
 				E537255A253DB51400E06E2A /* SceneDelegate.swift in Sources */,
 				DFFF07B5259910920096762E /* InitialFormsTableViewCell.swift in Sources */,
 				E53725C7253DB81300E06E2A /* UIView+Animations.swift in Sources */,
@@ -653,17 +665,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 46NZ6QG8YF;
+				DEVELOPMENT_TEAM = NAC7S7WUNG;
 				INFOPLIST_FILE = Vega/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = vega.Vega;
+				PRODUCT_BUNDLE_IDENTIFIER = vega.Vega.avz;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -673,17 +685,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 46NZ6QG8YF;
+				DEVELOPMENT_TEAM = NAC7S7WUNG;
 				INFOPLIST_FILE = Vega/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = vega.Vega;
+				PRODUCT_BUNDLE_IDENTIFIER = vega.Vega.avz;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -49,18 +49,30 @@ class UpdatesViewController: UIViewController {
 extension UpdatesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return updates?.count ?? 0
+        return updates?.count ?? 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        cell.textLabel?.text = updates?[indexPath.row].title
-        cell.textLabel?.numberOfLines = 0
-        return cell
+        if updates == nil || updates?.count == 0{
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+            cell.textLabel?.text = "Уведомлений нет."
+            return cell
+        }
+        else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+            cell.textLabel?.text = updates?[indexPath.row].title
+            cell.textLabel?.numberOfLines = 0
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     

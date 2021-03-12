@@ -99,6 +99,7 @@ class DocumentsListViewController: UIViewController {
 
     private func setupTableView() {
         view.addSubview(tableView)
+        tableView.keyboardDismissMode = .onDrag
         tableView.frame = view.frame
         tableView.delegate = self
         tableView.dataSource = self
@@ -183,16 +184,15 @@ class DocumentsListViewController: UIViewController {
 
     }
     
+    private func parseSearchbar() {
+        searchQuery.searchText = searchController.searchBar.text ?? ""
+    }
+    
     private func parseKeywords() {
-        
-        
         keywords = []
         initialFormsDataArray = []
         
-        searchText = searchController.searchBar.text ?? ""
-        
-
-        let searchTextPartsArray = searchController.searchBar.text!.split(separator: ",")
+        let searchTextPartsArray = searchQuery.searchText.split(separator: ",")
                     searchTextPartsArrayWithoutSpaces = []
                     for part in searchTextPartsArray{
                         if part.first == " "{
@@ -254,10 +254,12 @@ class DocumentsListViewController: UIViewController {
     }
     
     @objc func refreshButtonClicked(sender : UIButton) {
-        getDocuments()
+        networkService.authorizationAs { (code) in
+            DispatchQueue.main.async{
+                self.getDocuments()
+            }
+        }
     }
-
-
 }
 
 // MARK: - UITableView
@@ -294,7 +296,7 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
             let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! DocumentListTableViewCell
             let document = documents[indexPath.row]
             
-            cell.configure(with: document.title, description: document.descriptionBody ?? "", rating: document.rating, comments: "\(document.comments.count)")
+            cell.configure(with: document.descriptionHeader, description: document.descriptionBody ?? "", rating: document.rating, comments: "\(document.comments.count)")
             
             return cell
         } else {
@@ -321,6 +323,7 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
     func loadMoreData() {
         
         if documents.count < Int(totalCount)! {
+            navigationItem.title = "Загрузка..."
             if !self.isLoading {
                 self.isLoading = true
                 
@@ -330,6 +333,7 @@ extension DocumentsListViewController: UITableViewDelegate, UITableViewDataSourc
                         self.documents += documents.documents?.compactMap { Document(from: $0) } ?? []
                         DispatchQueue.main.async {
                             self.isLoading = false
+                            self.navigationItem.title = "Документов: \(self.totalCount)"
                             self.tableView.reloadData()
                             
                         }
@@ -361,6 +365,7 @@ extension DocumentsListViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
+        parseSearchbar()
         parseKeywords()
     }
         
@@ -389,17 +394,22 @@ extension DocumentsListViewController {
 
 extension DocumentsListViewController: RefreshDocumentsListDelegate{
     func refreshDocuments(searchQuery: SearchQuery) {
+        
+        if searchQuery.searchText == self.searchQuery.searchText {
+            self.searchQuery = searchQuery
+            searchController.searchBar.text = searchQuery.searchText
+            self.getDocuments()
+        } else {
+            self.searchQuery = searchQuery
+            searchController.searchBar.text = searchQuery.searchText
+            self.parseKeywords()
+        }
+    }
+    
+    func searchTextUpdate(searchQuery: SearchQuery) {
         self.searchQuery = searchQuery
-        self.getDocuments()
-
+        searchController.searchBar.text = searchQuery.searchText
     }
-    
-    func searchTextUpdate() {
-        searchController.searchBar.text = self.searchText
-    }
-
-    
-    
 }
 
 
